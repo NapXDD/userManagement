@@ -61,7 +61,7 @@ export default function UserProfileCard({id}){
                                         progress: undefined,
                                         theme: "colored",
                                         });
-                                    window.location.reload()
+                                    setTimeout(() => {window.location.reload()}, 1000) 
                                 }
                             }
                         )

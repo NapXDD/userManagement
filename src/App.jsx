@@ -19,10 +19,8 @@ function App() {
   useEffect(() => {
     if (auth === false) {
       navigate("/signin");
-    } else {
-      navigate("/userlist");
     }
-  }, []);
+  }, [auth]);
 
   return (
     <div className="App">

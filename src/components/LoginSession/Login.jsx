@@ -14,8 +14,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { loginSuccess } from "../../redux/features/setAuth";
 import { loginAccount } from "../../utilities/apiClientPost";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { currentUserData } from "../../redux/features/setCurrentUser";
 
@@ -49,6 +49,7 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   let regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/i;
+  const auth = useSelector(state => state.auth.value)
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -134,13 +135,12 @@ export default function SignIn() {
     setPasswordHelper("")
   }
 
-  // useEffect(() => {
-  //   handleFocusEmail()
-  // }, [email])
-
-  // useEffect(() => {
-  //   handleFocusPassword()
-  // }, [password])
+  useLayoutEffect(() => {
+    if(auth === true){
+      navigate("/userlist")
+      window.location.reload()
+    }
+  }, [auth])
 
   return (
     <ThemeProvider theme={theme}>
