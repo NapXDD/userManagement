@@ -40,22 +40,16 @@ function App() {
           theme="colored"
         />
       </div>
-      {
-        auth !== false &&
-        <Routes>
-          <Route path="/" element={<Dashboard />}>
-            <Route path="userlist" element={<UserList />} />
-            <Route path="profile/:id" element={<Profile />} />
-            <Route
-              path="changepassword/user/:id"
-              element={<ChangePassword />}
-            />
-            <Route path="deleteAccount/user/:id" element={<DeleteAccount />} />
-          </Route>
-          <Route path="/signin" element={<SignIn />}></Route>
-          <Route path="/signup" element={<SignUp />}></Route>
-        </Routes>
-      }
+      <Routes>
+        <Route path="/" element={<Dashboard />}>
+          <Route path="userlist" element={<UserList />} />
+          <Route path="profile/:id" element={<Profile />} />
+          <Route path="changepassword/user/:id" element={<ChangePassword />} />
+          <Route path="deleteAccount/user/:id" element={<DeleteAccount />} />
+        </Route>
+        <Route path="/signin" element={<SignIn />}></Route>
+        <Route path="/signup" element={<SignUp />}></Route>
+      </Routes>
     </div>
   );
 }
