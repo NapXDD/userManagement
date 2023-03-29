@@ -1,0 +1,80 @@
+.user-profile-card-container{
+    width: 300px;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+}
+
+.user-profile-avatar img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.user-profile-card-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.user-profile-name h5{
+    font-size: 1.25rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #4f4f4f
+}
+
+.user-profile-email p{
+    color: #757575
+}
+
+.user-profile-avatar{ 
+    position: relative;
+    border-radius: 50%;
+}
+
+.user-profile-avatar img{
+    object-fit: cover;
+}
+
+.user-profile-avatar:hover{
+    background-color: rgba(46, 46, 46, 0.7);
+}
+
+.change-paragraph{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(46, 46, 46, 0.7);
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.change-paragraph p{
+    color: #fff
+}
+
+.hide {
+    display: none;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    display: flex;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: #fff;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+}

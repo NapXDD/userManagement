@@ -1,0 +1,47 @@
+@tailwind components;
+
+@layer components{
+  .user-card-container{
+    width: 300px;
+    border: solid 1px black;
+    margin: 10px;
+    border-radius: 1rem;
+  }
+
+  .user-card-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .user-card-avatar{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .user-card-avatar img{
+    width: 100px;
+    height: 100px;
+  }
+
+  .user-list-content{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
+  }
+
+  .user-card-info{
+    display: flex;
+  }
+
+  .pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
