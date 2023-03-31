@@ -19,13 +19,13 @@ Here is the way to run this project on your local machine
 Here is some of the features that I have done in this project
 
 ## Login
-<img href=".\public\assets\readme\Login.jpg" />
+<img href="https://raw.githubusercontent.com/NapXDD/userManagement/main/public/assets/readme/Login.jpg" />
 
 ## Signup
-<img href=".\public\assets\readme\Signup.jpg" />
+<img href="https://raw.githubusercontent.com/NapXDD/userManagement/main/public/assets/readme/Signup.jpg" />
 
 ## User profile
-<img href=".\public\assets\readme\profile.jpg" />
+<img href="https://raw.githubusercontent.com/NapXDD/userManagement/main/public/assets/readme/profile.jpg" />
 
 ## User list 
-<img href=".\public\assets\readme\userlist.jpg" />
+<img href="https://raw.githubusercontent.com/NapXDD/userManagement/main/public/assets/readme/userlist.jpg" />
