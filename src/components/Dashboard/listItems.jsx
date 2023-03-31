@@ -4,13 +4,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import PeopleIcon from '@mui/icons-material/People';
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
-
-
-
 
 export const mainListItems = (
   <React.Fragment>
@@ -29,7 +27,7 @@ export const mainListItems = (
 
 export const SecondaryListItems = ({handleLogOut}) => {
 
-  const currentUser = useSelector(state => state.currentUser.data)
+  const userId = localStorage.getItem("userId")
 
   return(
     <React.Fragment>
@@ -37,28 +35,28 @@ export const SecondaryListItems = ({handleLogOut}) => {
       Your settings
     </ListSubheader>
 
-    <Link to={`/changepassword/user/${currentUser._id}`}>
+    <Link to={`/changepassword/user/${userId}`} >
       <ListItemButton>
         <ListItemIcon>
-          <AssignmentIcon />
+          <LockOpenIcon/>
         </ListItemIcon>
         <ListItemText primary="Change password" />
       </ListItemButton>
     </Link>
 
-    <Link to={`/deleteAccount/user/${currentUser._id}`}>
+    <Link to={`/deleteAccount/user/${userId}`} >
       <ListItemButton>
         <ListItemIcon>
-          <AssignmentIcon />
+          <PersonRemoveIcon />
         </ListItemIcon>
         <ListItemText primary="Delete your account" />
       </ListItemButton>
     </Link>
 
-    <Link to={`/profile/${currentUser._id}`}>
+    <Link to={`/profile/${userId}`} >
       <ListItemButton>
         <ListItemIcon>
-          <AssignmentIcon />
+          <ManageAccountsIcon />
         </ListItemIcon>
         <ListItemText primary="Profile settings" />
       </ListItemButton>
@@ -66,7 +64,7 @@ export const SecondaryListItems = ({handleLogOut}) => {
   
     <ListItemButton onClick={handleLogOut}>
       <ListItemIcon>
-        <AssignmentIcon />
+        <LogoutIcon />
       </ListItemIcon>
       <ListItemText primary="Log out" />
     </ListItemButton>

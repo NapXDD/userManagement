@@ -22,13 +22,15 @@ import { logoutAccount } from '../../utilities/apiClientPost';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/features/setAuth';
 import { toast } from "react-toastify";
+import { getUserbyID } from '../../utilities/apiClientGet';
+import { user } from '../../Redux/features/setUser';
 
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="http://127.0.0.1:5173/userlist">
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -86,7 +88,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function DashboardContent({title}) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -101,8 +103,7 @@ function DashboardContent() {
     try{
       const {status} = await logoutAccount(token, userId)
       if(status === 200){
-        localStorage.removeItem("accessToken")
-        localStorage.removeItem("userId")
+        localStorage.clear()
         dispatch(logout())
         toast.success('logout success', {
           position: "top-right",
@@ -152,7 +153,7 @@ function DashboardContent() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {title}
             </Typography>
             <DashboardAva />
           </Toolbar>
@@ -195,13 +196,15 @@ function DashboardContent() {
           <Container>
             <Outlet />
           </Container>
-          <Copyright sx={{ pt: 4 }} />
+          <Copyright sx={{ 
+            pt: 4 ,
+          }} />
         </Box>
       </Box>
     </ThemeProvider>
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
+export default function Dashboard({title}) {
+  return <DashboardContent title={title}/>;
 }

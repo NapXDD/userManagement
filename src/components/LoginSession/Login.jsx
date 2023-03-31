@@ -15,9 +15,9 @@ import { loginSuccess } from "../../redux/features/setAuth";
 import { loginAccount } from "../../utilities/apiClientPost";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { currentUserData } from "../../redux/features/setCurrentUser";
+import { useEffect } from "react";
 
 function Copyright(props) {
   return (
@@ -49,98 +49,117 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   let regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/i;
-  const auth = useSelector(state => state.auth.value)
+  const auth = useSelector((state) => state.auth.value);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    handleCheckEmail()
-    handleCheckPassword()
-    if(!errorEmailState && !errorPasswordState){
-      try {
-        loginAccount(data.get("email"), data.get("password")).then((res) => {
-          if (res.status === 200) {
-            dispatch(currentUserData(res.data))
-            localStorage.setItem("accessToken", res.data.accessToken); //save token to local storage
-            localStorage.setItem("userId", res.data._id); //save userid to local storage
-            localStorage.setItem("userAva", res.data.avatar);
-            dispatch(loginSuccess());
-            toast.success('Login success!', {
-              position: "top-right",
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
+
+    if (errorEmailState === false && errorPasswordState === false) {
+      if (!errorEmailState && !errorPasswordState) {
+        try {
+          loginAccount(data.get("email"), data.get("password"))
+            .then((res) => {
+              if (res.status === 200) {
+                localStorage.setItem("accessToken", res.data.accessToken); //save token to local storage
+                localStorage.setItem("userId", res.data._id); //save userid to local storage
+                localStorage.setItem("userAva", res.data.avatar);
+                localStorage.setItem("username", res.data.username);
+                localStorage.setItem("birthday", res.data.birthDay);
+                localStorage.setItem("bio", res.data.bio);
+                dispatch(loginSuccess());
+                toast.success("Login success!", {
+                  position: "top-right",
+                  autoClose: 1000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                });
+                navigate("/userlist");
+              }
+            })
+            .catch((err) => {
+              toast.error("Email or password incorrect", {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
               });
-            navigate("/userlist");
-          }
+            });
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        toast.error("something wrong, try again", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
         });
-      } catch (err) {
-        console.error(err);
       }
-    }
-    else{
-      toast.error('something wrong, try again', {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        });
     }
   };
 
   const handleCheckEmail = () => {
-    if(email.length === 0){
-      setErrorEmailState(true)
-      setEmailHelper("Email is empty")
-    }
-    else if(email.length > 0 ){
-      if(!regex.test(email))
-      {
-        setErrorEmailState(true)
-        setEmailHelper("Email type is not correct")
-      }
-      else{
-        setErrorEmailState(false)
-        setEmailHelper("")
+    if (email.length === 0) {
+      setErrorEmailState(true);
+      setEmailHelper("Email is empty");
+    } else if (email.length > 0) {
+      if (!regex.test(email)) {
+        setErrorEmailState(true);
+        setEmailHelper("Email type is not correct");
+      } else {
+        setErrorEmailState(false);
+        setEmailHelper("");
       }
     }
   };
 
   const handleCheckPassword = () => {
-    if(password.length === 0){
-      setErrorPasswordState(true)
-      setPasswordHelper("Password is empty")
+    if (password.length === 0) {
+      setErrorPasswordState(true);
+      setPasswordHelper("Password is empty");
+    } else if (password.length > 0) {
+      setErrorPasswordState(false);
+      setPasswordHelper("");
     }
-    else if(password.length > 0){
-      setErrorPasswordState(false)
-      setPasswordHelper("")
-    }
-  }
+  };
 
   const handleEmailFocus = () => {
-    setErrorPasswordState(false)
-    setPasswordHelper("")
-  }
+    setErrorEmailState(false);
+    setEmailHelper("");
+  };
 
   const handlePasswordFocus = () => {
-    setErrorPasswordState(false)
-    setPasswordHelper("")
-  }
+    setErrorPasswordState(false);
+    setPasswordHelper("");
+  };
+
+  useEffect(() => {
+    handleCheckEmail();
+  }, [email]);
+
+  useEffect(() => {
+    handleCheckPassword();
+  }, [password]);
 
   useLayoutEffect(() => {
-    if(auth === true){
-      navigate("/userlist")
-      window.location.reload()
+    if (auth === true) {
+      navigate("/userlist");
+      window.location.reload();
     }
-  }, [auth])
+  }, [auth]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -169,7 +188,6 @@ export default function SignIn() {
             <TextField
               error={errorEmailState}
               margin="normal"
-              required
               fullWidth
               id="email"
               label="Email"
@@ -178,12 +196,10 @@ export default function SignIn() {
               autoComplete="email"
               helperText={emailHepler}
               onChange={(e) => setEmail(e.target.value)}
-              onFocus={handleEmailFocus}
             />
             <TextField
               error={errorPasswordState}
               margin="normal"
-              required
               fullWidth
               name="password"
               label="Password"
@@ -191,11 +207,6 @@ export default function SignIn() {
               id="password"
               helperText={passwordHelper}
               onChange={(e) => setPassword(e.target.value)}
-              onFocus={handlePasswordFocus}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <Button
               type="submit"

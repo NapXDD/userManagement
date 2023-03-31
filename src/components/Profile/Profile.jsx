@@ -27,9 +27,13 @@ export default function Profile() {
 
   return (
     <div className='profile-container'>
-      <UserProfileCard />
+      <div className='profile-card'></div>
+      <UserProfileCard id={id} user={user}/>
       {
-        currentUserId !== user._id ? <></> : <UserProfileSetting />
+        currentUserId !== user._id ? <></> : 
+        <div className='setting-card'>
+          <UserProfileSetting user={user}/>
+        </div>
       }
     </div>
   );

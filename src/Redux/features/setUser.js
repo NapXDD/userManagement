@@ -5,7 +5,9 @@ const initialState = {
         _id: "",
         username: "",
         email: "",
-        avatar: ""
+        avatar: "",
+        birthDay: "",
+        bio: "",
     }
 }
 
@@ -19,7 +21,9 @@ export const user = createSlice({
                 _id: action.payload._id,
                 username: action.payload.username,
                 email: action.payload.email,
-                avatar: action.payload.avatar
+                avatar: action.payload.avatar,
+                birthDay: action.payload.birthDay,
+                bio: action.payload.bio
             }
         },
     }

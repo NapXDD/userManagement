@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { logoutAccount } from '../../../utilities/apiClientPost';
 import { logout } from '../../../Redux/features/setAuth';
 import Popover from '@mui/material/Popover';
@@ -9,8 +9,10 @@ import "./dashboardAva.css"
 import { useNavigate } from 'react-router-dom';
 import { avatarURL } from '../../../utilities/avatarURL';
 import { toast } from "react-toastify";
-import { currentUserData } from '../../../redux/features/setCurrentUser';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { getUserbyID } from '../../../utilities/apiClientGet';
+import { useEffect } from 'react';
 
 export default function DashboardAva(){
 
@@ -19,7 +21,12 @@ export default function DashboardAva(){
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null)
     const userId = localStorage.getItem("userId")
-    const userAva = localStorage.getItem("userAva")
+    const [user, setUser] = useState({})
+
+    const handleGetUser = async () => {
+        const res = await getUserbyID(userId, token)
+        setUser(res.data)
+    }
 
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
@@ -38,8 +45,7 @@ export default function DashboardAva(){
             logoutAccount(token, userId)
             .then(res => {
                 if(res.status === 200){
-                    localStorage.removeItem("accessToken")
-                    localStorage.removeItem("userId")
+                    localStorage.clear()
                     dispatch(logout())
                     toast.success('logout success', {
                         position: "top-right",
@@ -60,6 +66,10 @@ export default function DashboardAva(){
             console.error(e)
         }
     }
+
+    useEffect(() => {
+        handleGetUser()
+    }, [])
   
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
@@ -68,7 +78,7 @@ export default function DashboardAva(){
         <div className="dashboardAva-container">
             <div className="ava-dashboard-container">
                     <Button className='ava-dashboard-button' onClick={handleClick}>
-                        <img src={`${avatarURL}/${userAva}`} alt="user avatar" />
+                        <img src={`${avatarURL}/${user.avatar}`} alt="user avatar" />
                     </Button>
                 <Popover
                     id={id}
@@ -81,10 +91,10 @@ export default function DashboardAva(){
                     }}
                 >
                     <Typography sx={{ p: 1, padding: "0 8px"}}>
-                        <Button sx={{textTransform: "none", fontSize: 16}} onClick={handleProfile}>Profiles</Button>
+                        <Button sx={{textTransform: "none", fontSize: 16}} onClick={handleProfile}> <ManageAccountsIcon sx={{paddingRight: "10px"}} /> Profiles</Button>
                     </Typography>
                     <Typography sx={{ p: 1, padding: "0 8px" }}>
-                        <Button sx={{textTransform: "none", fontSize: 16}} onClick={handleLogout}>Log out</Button>
+                        <Button sx={{textTransform: "none", fontSize: 16}} onClick={handleLogout}> <LogoutIcon sx={{paddingRight: "10px"}}/> Log out</Button>
                     </Typography>
                 </Popover>
             </div>

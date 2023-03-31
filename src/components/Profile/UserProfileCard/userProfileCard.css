@@ -1,5 +1,5 @@
 .user-profile-card-container{
-    width: 300px;
+    width: 500px;
     margin-top: 20px;
     background-color: #fff;
     border-radius: 4px;
@@ -31,6 +31,15 @@
 .user-profile-email p{
     color: #757575
 }
+
+.user-profile-date p{
+    color: #757575
+}
+
+.user-profile-bio p{
+    color: #757575
+}
+
 
 .user-profile-avatar{ 
     position: relative;

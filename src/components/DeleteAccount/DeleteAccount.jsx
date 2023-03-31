@@ -6,11 +6,14 @@ import { deleteUser } from "../../utilities/apiClientDelete";
 import { useDispatch } from "react-redux";
 import { logout } from "../../Redux/features/setAuth";
 import { toast } from "react-toastify";
+import "./deleteaccount.css"
 
 export default function DeleteAccount(){
 
     const {id} = useParams()
     const [idConfirm, setIdConfirm] = useState("")
+    const [errorIdState, setErrorIdState] = useState(false)
+    const [idHelper, setIdHelper] = useState("")
     const currentUserId = localStorage.getItem("userId")
     const token = localStorage.getItem("accessToken")
     const dispatch = useDispatch()
@@ -44,7 +47,8 @@ export default function DeleteAccount(){
                 }
             }
             else{
-                console.log("wrong confirm code")
+                setErrorIdState(true)
+                setIdHelper("Wrong confirm code")
             }
         }
         else{
@@ -70,7 +74,8 @@ export default function DeleteAccount(){
                         }
                     )
                    .catch(() => {
-                    console.error("wrong confirm code")
+                        setErrorIdState(true)
+                        setIdHelper("Wrong confirm code")
                    })
                     
                 }
@@ -84,24 +89,41 @@ export default function DeleteAccount(){
         }
     }
 
+    const handleFocus = () => {
+        setErrorIdState(false)
+        setIdHelper("")
+    }
+
     return(
-        <div>
+        <div className="delete-form-container">
+            <div className="delete-form-content">
+            <dir className="title-describe">
             <p>Write <b>{id}</b> to confirm delete account</p>
+            </dir>
             <Box component="form" onSubmit={handleSubmit}>
                 <TextField 
-                    label="ID" 
+                    error={errorIdState}
+                    label="Verify" 
                     id="password" 
                     name='password'
+                    helperText={idHelper}
+                    fullWidth
+                    required
                     onChange={e => setIdConfirm(e.target.value)}
+                    onFocus={handleFocus}
                 />
                 <Button
                     type="submit"
                     variant="contained"
                     color="primary"
+                    sx={{
+                        marginTop: 1
+                    }}
                     >
                         Submit 
                 </Button>
             </Box>
+            </div>
         </div>
     )
 }

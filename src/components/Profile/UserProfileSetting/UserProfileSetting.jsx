@@ -3,20 +3,38 @@ import { useEffect, useState } from 'react';
 import "./userProfileSetting.css"
 import BasicDatePicker from '../../../utilities/component/datepicker/datepicker';
 import { updateUserbyID } from '../../../utilities/apiClientPut';
+import { toast } from "react-toastify";
 
-export default function UserProfileSetting(){
+export default function UserProfileSetting({user}){
 
     const userId = localStorage.getItem("userId")
     const token = localStorage.getItem("accessToken")
-    const [newData, setNewData] = useState({})
-    const [date, setDate] = useState("")
+    const [newData, setNewData] = useState({
+        username: user.username,
+        bio: user.bio,
+        birthDay: user.birthDay
+    })
+    
+    const [date, setDate] = useState(user.birthDay)
+    const birthDay = user.birthDay.split("-")
 
     const handleUpdateUser = async () => {
         try{
-            const { data: res } = await updateUserbyID(userId, newData, token)
-            console.log(res)
+            const res = await updateUserbyID(userId, newData, token)
             if(res.status === 200){
-                console.log("update success")
+                toast.success("User profile updated", {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    });
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000); 
             }
         }catch(err){
             console.log(err)
@@ -48,27 +66,38 @@ export default function UserProfileSetting(){
 
     return(
         <div className="profile-setting-container">
+            <div className='title-describe'><p>Edit your profile here:</p></div>
             <form className='profile-setting-form' onSubmit={handleSubmit}>
                 <TextField 
                     label="Username" 
                     id="username" 
                     name='username'
+                    defaultValue={user.username}
                     onChange={handleChange}
+                    fullWidth
                 />
                 <TextField 
                     label="Bio" 
                     id="bio" 
                     name='bio'
+                    defaultValue={user.bio}
                     onChange= {handleChange}
+                    fullWidth
+                    margin="normal"
                 />
                 <BasicDatePicker 
                     description={"Date of birth"}
                     onChange= {handleChangeDate}
+                    defaultValue={`${birthDay[2]}-${birthDay[1]}-${birthDay[0]}`}
                 />
                 <Button
                 type="submit"
                 variant="contained"
                 color="primary"
+                sx={{
+                    width:100,
+                    margin: 1
+                }}
                 >
                     Submit 
                 </Button>

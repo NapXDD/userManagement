@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { getAllUser, getUserbyID } from '../../../utilities/apiClientGet';
 import UserCard from '../UserCard/UserCard';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 
 export function Items({currentItems}){
@@ -40,6 +42,7 @@ export default function PaginatedItems({ itemsPerPage }){
             console.error(err)
         }
     }
+
     useEffect(() => {
         handleGetAllUsers() 
     }, [])
@@ -56,10 +59,10 @@ export default function PaginatedItems({ itemsPerPage }){
     const pageCount = Math.ceil(items.length / itemsPerPage)
 
     // Invoke when user click to request another page.
-    const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % items.length
+    const handlePageClick = (e, page) => {
+        const newOffset = ((page-1) * itemsPerPage) % items.length
         console.log(
-            `User requested page number ${event.selected}, which is offset ${newOffset}`
+            `User requested page number ${page-1}, which is offset ${newOffset}`
         );
         setItemOffset(newOffset);
     }
@@ -67,16 +70,9 @@ export default function PaginatedItems({ itemsPerPage }){
     return(
         <div className='pageInation-container'>
             <Items currentItems={currentItems} />
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel="next >"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={5}
-                pageCount={pageCount}
-                previousLabel="< previous"
-                className='pagination'
-                renderOnZeroPageCount={null}
-            />
+            <Stack spacing={2}>
+                <Pagination count={pageCount} onChange={(e, page) => handlePageClick(e, page)} variant="outlined" shape="rounded" />
+            </Stack>
         </div>
     )
 }
