@@ -2,8 +2,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -11,7 +9,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { loginSuccess } from "../../redux/features/setAuth";
+import { loginSuccess } from "../../Redux/features/setAuth";
 import { loginAccount } from "../../utilities/apiClientPost";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,6 +52,7 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const date = new Date()
 
     if (errorEmailState === false && errorPasswordState === false) {
       if (!errorEmailState && !errorPasswordState) {
@@ -67,6 +66,7 @@ export default function SignIn() {
                 localStorage.setItem("username", res.data.username);
                 localStorage.setItem("birthday", res.data.birthDay);
                 localStorage.setItem("bio", res.data.bio);
+                localStorage.setItem("loggedTime", date)
                 dispatch(loginSuccess());
                 toast.success("Login success!", {
                   position: "top-right",

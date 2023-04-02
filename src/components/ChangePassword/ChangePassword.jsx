@@ -11,13 +11,13 @@ export default function ChangePassword(){
 
     const [currentPassword, setCurrentPassword] = useState("")
     const [repassword, setRepassword] = useState("")
-    const [newPassword, setNewPassword] = useState({})  
+    const [newPassword, setNewPassword] = useState("")  
     const [errorPasswordState, setErrorPasswordState] = useState(false)
     const [errorRePasswordState, setErrorRePasswordState] = useState(false)
     const [errorNewPasswordState, setErrorNewPasswordState] = useState(false)
     const [passwordHelper, setPasswordHelper] = useState("")
-    const [reRasswordHelper, setReRasswordHelper] = useState("")
-    const [newRasswordHelper, setNewRasswordHelper] = useState("")
+    const [reRasswordHelper, setRePasswordHelper] = useState("")
+    const [newPasswordHelper, setNewRasswordHelper] = useState("")
     const token = localStorage.getItem("accessToken")
     const {id} = useParams()
     const dispatch = useDispatch()
@@ -72,15 +72,15 @@ export default function ChangePassword(){
     const handleRePassword = () => {
         if(repassword.length === 0){
             setErrorRePasswordState(true)
-            setReRasswordHelper("Confirm password cannot be empty")
+            setRePasswordHelper("Confirm password cannot be empty")
         }
         else if(repassword.length > 0 && repassword !== newPassword){
             setErrorRePasswordState(true)
-            setReRasswordHelper("The confirm password is not the same as new password")
+            setRePasswordHelper("The confirm password is not the same as new password")
         }
         else if(repassword.length > 0 && repassword === newPassword){
             setErrorRePasswordState(false)
-            setReRasswordHelper("")
+            setRePasswordHelper("")
         }
     }
 
@@ -111,7 +111,7 @@ export default function ChangePassword(){
 
     const handleRePassFocus = () => {
         setErrorRePasswordState(false)
-        setReRasswordHelper("")
+        setRePasswordHelper("")
     }
 
     return(
@@ -137,7 +137,7 @@ export default function ChangePassword(){
                             name='newpassword'
                             type="password"
                             fullWidth
-                            helperText={newRasswordHelper}
+                            helperText={newPasswordHelper}
                             margin='normal'
                             onChange= {e => setNewPassword(e.target.value)}
                             onFocus={handleNewPassFocus}

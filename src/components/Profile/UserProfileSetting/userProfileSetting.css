@@ -13,3 +13,20 @@
 .title-describe{
     margin: 10px 0 10px 0;
 }
+
+@media screen and (max-width: 600px) {
+    .profile-setting-form{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+}
+
+@media screen and (max-width: 800px) {
+    .setting-card{
+        width: 500px;
+    }
+}

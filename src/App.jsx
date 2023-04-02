@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
@@ -13,11 +13,15 @@ import DeleteAccount from "./components/DeleteAccount/DeleteAccount";
 import NotFound from "./components/NotFound/NotFound";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { logoutAccount } from "./utilities/apiClientPost";
+import { logout } from "./Redux/features/setAuth";
 
 function App() {
   
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth.value);
+  const date = new Date()
 
   const url = window.location.href.split("/")[3]
   let title
@@ -51,6 +55,27 @@ function App() {
       navigate("/userlist")
     }
   }, [url])
+
+  useEffect(() => {
+    if(auth === true){
+      const loggedDate = localStorage.getItem("loggedTime")
+      const passedTime = (date -  Date.parse(loggedDate))/60000
+      const token = localStorage.getItem("accessToken")
+      const userId = localStorage.getItem("userId")
+      if(passedTime > 1440){
+        console.log("logged out")
+        logoutAccount(token, userId)
+        .then(
+          res => {
+            if(res.status === 200){
+              localStorage.clear()
+              dispatch(logout())
+            }
+          }
+        )
+      }
+    }
+  }, [date])
 
   return (
     <div className="App">

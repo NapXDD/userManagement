@@ -1,0 +1,5 @@
+@media screen and (max-width: 280) {
+    .menubar{
+        left: 0;
+    }
+}

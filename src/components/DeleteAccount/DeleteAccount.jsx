@@ -24,11 +24,10 @@ export default function DeleteAccount(){
         if(currentUserId === id){
             if(idConfirm === id){
                 try{
-                    const {data: res} = await deleteUser(token, id)
+                    const res = await deleteUser(token, id)
                     if(res.status === 200){
                         console.log("delete success")
-                        localStorage.removeItem("accessToken")
-                        localStorage.removeItem("userId")
+                        localStorage.clear()
                         dispatch(logout())
                         toast.warn('Your account have been deleted!', {
                             position: "top-right",

@@ -20,6 +20,9 @@ export default function UserProfileSetting({user}){
 
     const handleUpdateUser = async () => {
         try{
+            if(newData.birthDay === "NaN-NaN-NaN"){
+                newData.birthDay = ""
+            }
             const res = await updateUserbyID(userId, newData, token)
             if(res.status === 200){
                 toast.success("User profile updated", {
@@ -72,6 +75,7 @@ export default function UserProfileSetting({user}){
                     label="Username" 
                     id="username" 
                     name='username'
+                    required
                     defaultValue={user.username}
                     onChange={handleChange}
                     fullWidth

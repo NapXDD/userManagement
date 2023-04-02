@@ -10,18 +10,22 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Link } from 'react-router-dom';
 import { avatarURL } from '../../../utilities/avatarURL';
+import { Container } from '@mui/material';
 
 export default function UserCard({data, currentUser}) {
   const theme = useTheme();
 
   return (
-    <Card sx={{ display: 'flex' }}>
+    <Card sx={{ display: 'flex', width: "300px", justifyContent: "space-between" }}>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <CardContent sx={{ flex: '1 0 auto' }}>
-          <Typography component="div" variant="h5">
+        <CardContent sx={{ flex: '1 0 auto', width: "200px",  }}>
+          <Typography component="div" variant="h5"
+          sx={{textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden"}}
+          >
             {data.username}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" component="div">
+          <Typography variant="subtitle1" color="text.secondary" component="div" 
+          sx={{textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden"}}>
             {data.email}
           </Typography>
         </CardContent>
@@ -45,7 +49,7 @@ export default function UserCard({data, currentUser}) {
       </Box>
       <CardMedia
         component="img"
-        sx={{ width: 100, }}
+        sx={{ width: 100, right: 0}}
         image={`${avatarURL}/${data.avatar}`}
         alt="user avatar"
       />

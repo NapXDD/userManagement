@@ -20,7 +20,7 @@ import {
 } from "react-router-dom";
 import { logoutAccount } from '../../utilities/apiClientPost';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/features/setAuth';
+import { logout } from '../../Redux/features/setAuth';
 import { toast } from "react-toastify";
 import { getUserbyID } from '../../utilities/apiClientGet';
 import { user } from '../../Redux/features/setUser';
@@ -89,7 +89,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const mdTheme = createTheme();
 
 function DashboardContent({title}) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -128,7 +128,7 @@ function DashboardContent({title}) {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open}>
+        <AppBar position="absolute" open={open} >
           <Toolbar
             sx={{
               pr: '24px', // keep right padding when drawer closed
@@ -158,7 +158,7 @@ function DashboardContent({title}) {
             <DashboardAva />
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant="permanent" open={open} className='menubar'>
           <Toolbar
             sx={{
               display: 'flex',
