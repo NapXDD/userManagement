@@ -1,3 +1,3 @@
-const baseURL = 'http://localhost:8000'
+const baseURL = 'https://usermanagement3.onrender.com'
 
 export {baseURL}
