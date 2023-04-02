@@ -1,6 +1,6 @@
 # userManagement Project
 This is the project User Management, storing user account in MongoDB.
-User admin can be admin or not
+User can be admin or not
 
 <p>In this project, we have login, register, changing avatar feature, etc</p> 
 <p>This project using ReactJS - Vite as a Frontend and NodeJS to interact with MongoDB as Backend</p>
