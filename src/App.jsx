@@ -14,7 +14,7 @@ import NotFound from "./components/NotFound/NotFound";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { logoutAccount } from "./utilities/apiClientPost";
-import { logout } from "./Redux/features/setAuth";
+import { loginFail, logout } from "./Redux/features/setAuth";
 
 function App() {
   
@@ -43,6 +43,13 @@ function App() {
       break
     }
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    if(token === null){
+      dispatch(loginFail())
+    }
+  },[])
 
   useEffect(() => {
     if (auth === false) {
