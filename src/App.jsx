@@ -62,6 +62,9 @@ function App() {
     else if(url === "" && auth === false){
       navigate("/signin")
     }
+    else if(url === "signin" && auth === true || url === "signup" && auth === true){
+      navigate("/dashboard/userlist")
+    }
   }, [url])
 
   useEffect(() => {
