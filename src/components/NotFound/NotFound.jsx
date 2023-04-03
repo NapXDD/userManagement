@@ -2,13 +2,20 @@ import { useNavigate } from "react-router-dom";
 import React from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { useSelector } from "react-redux";
 
 export default function NotFound(){
 
     const navigate = useNavigate()
+    const auth = useSelector(state => state.auth.value)
 
     const handleBackHome = () => {
-        navigate("/userlist")
+      if(auth === true){
+        navigate("/dashboard/userlist")
+      }
+      else{
+        navigate("/signin")
+      }
     }
 
     return(

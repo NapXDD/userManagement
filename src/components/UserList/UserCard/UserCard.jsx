@@ -30,14 +30,14 @@ export default function UserCard({data, currentUser}) {
           </Typography>
         </CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-        <Link to={`/profile/${data._id}`}>
+        <Link to={`/dashboard/profile/${data._id}`}>
           <IconButton aria-label="previous">
               <AccountBoxIcon />
           </IconButton>
           </Link>
           { 
             currentUser.isAdmin === true ? (
-              <Link to={`/deleteAccount/user/${data._id}`}>
+              <Link to={`/dashboard/deleteAccount/user/${data._id}`}>
                 <IconButton aria-label="next"> 
                   <DeleteForeverIcon />
                 </IconButton> 

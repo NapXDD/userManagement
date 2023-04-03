@@ -50,6 +50,7 @@ export default function SignUp() {
   const [emailHelper, setEmailHelper] = useState("");
   const [passwordHelper, setPasswordHelper] = useState("");
   const [rePasswordHelper, setRePasswordHelper] = useState("");
+  const [isRender, setIsRender] = useState(false)
   let regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/i;
   
   const user = {
@@ -60,6 +61,20 @@ export default function SignUp() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if(email === "" || password === "" || username === "" || rePassword === ""){
+      toast.error('Please fill all the empty required field', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+      return
+    }
 
     if (
       errorUsernameState === false &&
@@ -142,19 +157,31 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    handleEmail();
+    setIsRender(true)
+  }, [])
+
+  useEffect(() => {
+    if(isRender){
+      handleEmail();
+    }
   }, [email]);
 
   useEffect(() => {
-    handleUsername();
+    if(isRender){
+      handleUsername();
+    }
   }, [username]);
 
   useEffect(() => {
-    handlePassword();
+    if(isRender){
+      handlePassword();
+    }
   }, [password]);
 
   useEffect(() => {
-    handleRePassword();
+    if(isRender){
+      handleRePassword();
+    }
   }, [rePassword]);
 
   return (

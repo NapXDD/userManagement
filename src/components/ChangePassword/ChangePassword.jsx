@@ -1,11 +1,12 @@
 import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { logout } from '../../Redux/features/setAuth';
 import { updateUserPasswordByID } from '../../utilities/apiClientPut';
 import { toast } from "react-toastify";
 import "./changepassword.css"
+import { useEffect } from 'react';
 
 export default function ChangePassword(){
 
@@ -18,15 +19,27 @@ export default function ChangePassword(){
     const [passwordHelper, setPasswordHelper] = useState("")
     const [reRasswordHelper, setRePasswordHelper] = useState("")
     const [newPasswordHelper, setNewRasswordHelper] = useState("")
+    const [isRender, setIsRender] = useState(false)
     const token = localStorage.getItem("accessToken")
     const {id} = useParams()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        handleCurrentPassword()
-        handleNewPassword()
-        handleRePassword()
+        if(currentPassword === "" || repassword === "" || newPassword === ""){
+            toast.error('Please fill all the empty required field', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+              return
+        }
         if(errorPasswordState === false && errorRePasswordState === false && errorNewPasswordState === false){
             const newPass = {
                 currentPassword: currentPassword,
@@ -45,8 +58,8 @@ export default function ChangePassword(){
                         progress: undefined,
                         theme: "colored",
                         });
-                    localStorage.removeItem("accessToken")
-                    localStorage.removeItem("userId")
+                    localStorage.clear()
+                    navigate("/")
                     dispatch(logout())
                 }
             }catch(err){
@@ -98,6 +111,29 @@ export default function ChangePassword(){
             setNewRasswordHelper("")
         }
     }
+
+    useEffect(() => {
+        setIsRender(true)
+    }, [])
+
+    useEffect(() => {
+        if(isRender)
+        {
+            handleCurrentPassword()
+        }
+    }, [currentPassword])
+
+    useEffect(() => {
+        if(isRender){
+            handleRePassword()
+        }
+    }, [repassword])
+
+    useEffect(() => {
+        if(isRender){
+            handleNewPassword()
+        }
+    }, [newPassword])
 
     const handlePassFocus = () => {
         setErrorPasswordState(false)

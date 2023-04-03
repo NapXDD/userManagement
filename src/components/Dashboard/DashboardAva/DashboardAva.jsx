@@ -39,7 +39,7 @@ export default function DashboardAva(){
     };
 
     const handleProfile = () => {
-        navigate(`/profile/${userId}`)
+        navigate(`/dashboard/profile/${userId}`)
     }
 
     const handleLogout = () => {
@@ -48,6 +48,7 @@ export default function DashboardAva(){
             .then(res => {
                 if(res.status === 200){
                     localStorage.clear()
+                    navigate("/")
                     dispatch(logout())
                     toast.success('logout success', {
                         position: "top-right",

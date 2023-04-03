@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 
 export const mainListItems = (
   <React.Fragment>
-    <Link to="/userlist">
+    <Link to="/dashboard/userlist">
         <ListItemButton>
         <ListItemIcon>
             <PeopleIcon />
@@ -22,7 +22,6 @@ export const mainListItems = (
     </Link>
   </React.Fragment>
 );
-
 
 
 export const SecondaryListItems = ({handleLogOut}) => {
@@ -35,7 +34,7 @@ export const SecondaryListItems = ({handleLogOut}) => {
       Your settings
     </ListSubheader>
 
-    <Link to={`/changepassword/user/${userId}`} >
+    <Link to={`/dashboard/changepassword/user/${userId}`} >
       <ListItemButton>
         <ListItemIcon>
           <LockOpenIcon/>
@@ -44,7 +43,7 @@ export const SecondaryListItems = ({handleLogOut}) => {
       </ListItemButton>
     </Link>
 
-    <Link to={`/deleteAccount/user/${userId}`} >
+    <Link to={`/dashboard/deleteAccount/user/${userId}`} >
       <ListItemButton>
         <ListItemIcon>
           <PersonRemoveIcon />
@@ -53,7 +52,7 @@ export const SecondaryListItems = ({handleLogOut}) => {
       </ListItemButton>
     </Link>
 
-    <Link to={`/profile/${userId}`} >
+    <Link to={`/dashboard/profile/${userId}`} >
       <ListItemButton>
         <ListItemIcon>
           <ManageAccountsIcon />

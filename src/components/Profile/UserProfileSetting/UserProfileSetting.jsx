@@ -41,9 +41,6 @@ export default function UserProfileSetting({user}){
                     progress: undefined,
                     theme: "colored",
                     });
-                // setTimeout(() => {
-                //     window.location.reload()
-                // }, 1100); 
             }
         }catch(err){
             console.log(err)

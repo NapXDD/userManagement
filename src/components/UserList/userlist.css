@@ -32,10 +32,8 @@
   }
 
   .user-list-content{
-    /* display: grid;
-    grid-template-columns: repeat(3, 300px); */
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 300px);
     justify-content: center;
     align-items: center;
     gap: 20px;

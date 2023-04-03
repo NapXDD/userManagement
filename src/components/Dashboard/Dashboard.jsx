@@ -16,14 +16,12 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DashboardAva from './DashboardAva/DashboardAva';
 import { mainListItems, SecondaryListItems } from './listItems';
 import {
-  Outlet
+  Outlet, useNavigate
 } from "react-router-dom";
 import { logoutAccount } from '../../utilities/apiClientPost';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../Redux/features/setAuth';
 import { toast } from "react-toastify";
-import { getUserbyID } from '../../utilities/apiClientGet';
-import { user } from '../../Redux/features/setUser';
 
 
 function Copyright(props) {
@@ -95,6 +93,7 @@ function DashboardContent({title}) {
   };
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const token = localStorage.getItem("accessToken")
   const userId = localStorage.getItem("userId")
@@ -105,6 +104,7 @@ function DashboardContent({title}) {
       if(status === 200){
         localStorage.clear()
         dispatch(logout())
+        navigate("/")
         toast.success('logout success', {
           position: "top-right",
           autoClose: 1000,

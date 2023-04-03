@@ -4,6 +4,9 @@ import { getAllUser, getUserbyID } from '../../../utilities/apiClientGet';
 import UserCard from '../UserCard/UserCard';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../Redux/features/setAuth';
 
 
 export function Items({currentItems}){
@@ -23,6 +26,8 @@ export default function PaginatedItems({ itemsPerPage }){
 
     const token = localStorage.getItem("accessToken")
     const userId = localStorage.getItem("userId")
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [items, setItems] = useState([])
 
@@ -39,7 +44,9 @@ export default function PaginatedItems({ itemsPerPage }){
             setItems(items => [...items])
             
         }catch(err){
-            console.error(err)
+            localStorage.clear()
+            dispatch(logout())
+            navigate("/signin")
         }
     }
 

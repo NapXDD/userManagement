@@ -91,7 +91,7 @@ export default function UserProfileCard() {
             <p>Email: {user.email}</p>
           </div>
           <div className="user-profile-bio">
-            <p>Des: {user.bio}</p>
+            <p>Bio: {user.bio}</p>
           </div>
           <div className="user-profile-date">
             <p>Date of birth: {user.birthDay}</p>

@@ -12,12 +12,11 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { loginSuccess } from "../../Redux/features/setAuth";
 import { loginAccount } from "../../utilities/apiClientPost";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { getUserbyID } from "../../utilities/apiClientGet";
-import { current } from "@reduxjs/toolkit";
 import { currentUserData } from "../../Redux/features/setCurrentUser";
 
 function Copyright(props) {
@@ -43,21 +42,34 @@ const theme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [errorEmailState, setErrorEmailState] = useState(false);
-  const [errorPasswordState, setErrorPasswordState] = useState(false);
+  const [didRender, setDidRender] = useState(false)
+  let [errorEmailState, setErrorEmailState] = useState(false);
+  let [errorPasswordState, setErrorPasswordState] = useState(false);
   const [emailHepler, setEmailHelper] = useState("");
   const [passwordHelper, setPasswordHelper] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   let regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/i;
-  const auth = useSelector((state) => state.auth.value);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const date = new Date();
-    handleCheckEmail()
-    handleCheckPassword()
+
+    if(email === "" || password === ""){
+      toast.error('Please fill all the empty required field', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+      return
+    }
+
     if (errorEmailState === false && errorPasswordState === false){
       try{
         const res = await loginAccount(data.get("email"), data.get("password"))
@@ -66,6 +78,7 @@ export default function SignIn() {
           localStorage.setItem("userId", res.data._id); //save userid to local storage
           localStorage.setItem("loggedTime", date);
           const {data: response} = await getUserbyID(res.data._id, res.data.accessToken)
+          navigate("/");
           dispatch(currentUserData(response))
           dispatch(loginSuccess());
           toast.success("Login success!", {
@@ -78,7 +91,6 @@ export default function SignIn() {
             progress: undefined,
             theme: "colored",
           });
-          navigate("/userlist");
         }
       }catch{
         toast.error("Email or password incorrect", {
@@ -121,10 +133,20 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    if (auth === true) {
-      navigate("/userlist");
+    setDidRender(true)
+  }, [])
+
+  useEffect(() => {
+    if(didRender){
+      handleCheckEmail()
     }
-  }, [auth]);
+  }, [email])
+
+  useEffect(() => {
+    if(didRender){
+      handleCheckPassword()
+    }
+  }, [password])
 
   return (
     <ThemeProvider theme={theme}>
@@ -147,7 +169,6 @@ export default function SignIn() {
           <Box
             component="form"
             onSubmit={handleSubmit}
-            noValidate
             sx={{ mt: 1 }}
           >
             <TextField
@@ -160,7 +181,7 @@ export default function SignIn() {
               type="email"
               autoComplete="email"
               helperText={emailHepler}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}  
             />
             <TextField
               error={errorPasswordState}

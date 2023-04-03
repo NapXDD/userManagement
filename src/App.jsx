@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { logoutAccount } from "./utilities/apiClientPost";
 import { loginFail, logout } from "./Redux/features/setAuth";
+import Blank from "./components/Blank/Blank";
 
 function App() {
   
@@ -23,9 +24,11 @@ function App() {
   const auth = useSelector((state) => state.auth.value);
   const date = new Date()
 
-  const url = window.location.href.split("/")[3]
+  const urlTitle = window.location.href.split("/")[4]
+  const url = window.location.href.split("/").pop()
+
   let title
-  switch(url){
+  switch(urlTitle){
     case 'profile':{
       title = "User profile"
       break
@@ -48,18 +51,16 @@ function App() {
     const token = localStorage.getItem("accessToken")
     if(token === null){
       dispatch(loginFail())
+      navigate("/signin")
     }
   },[])
 
   useEffect(() => {
-    if (auth === false) {
-      navigate("/signin");
+    if(url === "" && auth === true){
+      navigate("/dashboard/userlist")
     }
-  }, [auth]);
-
-  useEffect(() => {
-    if(url === ""){
-      navigate("/userlist")
+    else if(url === "" && auth === false){
+      navigate("/signin")
     }
   }, [url])
 
@@ -101,14 +102,15 @@ function App() {
         />
       </div>
       <Routes>
-        <Route exact path="/" element={<Dashboard title={title}/>}>
+        <Route exact path="/" element={<Blank/>} />
+        <Route path="/dashboard" element={<Dashboard title={title}/>}>
           <Route path="userlist" element={<UserList />} />
           <Route path="profile/:id" element={<Profile />} />
           <Route path="changepassword/user/:id" element={<ChangePassword />} />
           <Route path="deleteAccount/user/:id" element={<DeleteAccount />} />
         </Route>
         <Route path="/signin" element={<SignIn />}></Route>
-        <Route path="/signup" element={<SignUp />}></Route>
+        <Route path="/signup" element={<SignUp />}></Route> 
         <Route path="*" element={<NotFound />}></Route>
       </Routes>
     </div>

@@ -29,6 +29,7 @@ export default function DeleteAccount(){
                         console.log("delete success")
                         localStorage.clear()
                         dispatch(logout())
+                        navigate("/signin")
                         toast.warn('Your account have been deleted!', {
                             position: "top-right",
                             autoClose: 1000,
@@ -68,7 +69,7 @@ export default function DeleteAccount(){
                                     progress: undefined,
                                     theme: "colored",
                                     });
-                                navigate("/userlist")
+                                navigate("/")
                             }
                         }
                     )
@@ -83,7 +84,8 @@ export default function DeleteAccount(){
                 }
             }
             else{
-                console.log("wrong confirm code")
+                setErrorIdState(true)
+                setIdHelper("Wrong confirm code")
             }
         }
     }
