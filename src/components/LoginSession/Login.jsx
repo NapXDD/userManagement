@@ -16,6 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
+import { getUserbyID } from "../../utilities/apiClientGet";
+import { current } from "@reduxjs/toolkit";
+import { currentUserData } from "../../Redux/features/setCurrentUser";
 
 function Copyright(props) {
   return (
@@ -49,35 +52,23 @@ export default function SignIn() {
   let regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/i;
   const auth = useSelector((state) => state.auth.value);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const date = new Date();
     handleCheckEmail()
     handleCheckPassword()
-    if (errorEmailState === false && errorPasswordState === false) {
-      loginAccount(data.get("email"), data.get("password"))
-        .then((res) => {
-          if (res.status === 200) {
-            localStorage.setItem("accessToken", res.data.accessToken); //save token to local storage
-            localStorage.setItem("userId", res.data._id); //save userid to local storage
-            localStorage.setItem("loggedTime", date);
-            dispatch(loginSuccess());
-            toast.success("Login success!", {
-              position: "top-right",
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
-            navigate("/userlist");
-          }
-        })
-        .catch((err) => {
-          toast.error("Email or password incorrect", {
+    if (errorEmailState === false && errorPasswordState === false){
+      try{
+        const res = await loginAccount(data.get("email"), data.get("password"))
+        if (res.status === 200) {
+          localStorage.setItem("accessToken", res.data.accessToken); //save token to local storage
+          localStorage.setItem("userId", res.data._id); //save userid to local storage
+          localStorage.setItem("loggedTime", date);
+          const {data: response} = await getUserbyID(res.data._id, res.data.accessToken)
+          dispatch(currentUserData(response))
+          dispatch(loginSuccess());
+          toast.success("Login success!", {
             position: "top-right",
             autoClose: 1000,
             hideProgressBar: false,
@@ -87,9 +78,22 @@ export default function SignIn() {
             progress: undefined,
             theme: "colored",
           });
+          navigate("/userlist");
+        }
+      }catch{
+        toast.error("Email or password incorrect", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
         });
+      }
     }
-  };
+    }
 
   const handleCheckEmail = () => {
     if (email.length === 0) {

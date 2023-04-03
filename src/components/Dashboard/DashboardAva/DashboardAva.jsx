@@ -22,7 +22,7 @@ export default function DashboardAva(){
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null)
     const userId = localStorage.getItem("userId")
-    const user = useSelector(state => state.user.data)
+    const user = useSelector(state => state.currentUser.data)
     // const [user, setUser] = useState({})
 
     const handleGetUser = async () => {
