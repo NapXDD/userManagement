@@ -4,9 +4,13 @@ import "./userProfileSetting.css"
 import BasicDatePicker from '../../../utilities/component/datepicker/datepicker';
 import { updateUserbyID } from '../../../utilities/apiClientPut';
 import { toast } from "react-toastify";
+import { useDispatch } from 'react-redux';
+import { userData } from '../../../Redux/features/setUser';
+import { getUserbyID } from '../../../utilities/apiClientGet';
 
 export default function UserProfileSetting({user}){
 
+    const dispatch = useDispatch()
     const userId = localStorage.getItem("userId")
     const token = localStorage.getItem("accessToken")
     const [newData, setNewData] = useState({
@@ -25,6 +29,8 @@ export default function UserProfileSetting({user}){
             }
             const res = await updateUserbyID(userId, newData, token)
             if(res.status === 200){
+                const {data: res} = await getUserbyID(userId, token)
+                dispatch(userData(res))
                 toast.success("User profile updated", {
                     position: "top-right",
                     autoClose: 1000,
@@ -35,9 +41,9 @@ export default function UserProfileSetting({user}){
                     progress: undefined,
                     theme: "colored",
                     });
-                setTimeout(() => {
-                    window.location.reload()
-                }, 1000); 
+                // setTimeout(() => {
+                //     window.location.reload()
+                // }, 1100); 
             }
         }catch(err){
             console.log(err)

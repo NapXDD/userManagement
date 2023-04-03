@@ -13,7 +13,7 @@ import { loginSuccess } from "../../Redux/features/setAuth";
 import { loginAccount } from "../../utilities/apiClientPost";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 
@@ -52,62 +52,42 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const date = new Date()
-
+    const date = new Date();
+    handleCheckEmail()
+    handleCheckPassword()
     if (errorEmailState === false && errorPasswordState === false) {
-      if (!errorEmailState && !errorPasswordState) {
-        try {
-          loginAccount(data.get("email"), data.get("password"))
-            .then((res) => {
-              if (res.status === 200) {
-                localStorage.setItem("accessToken", res.data.accessToken); //save token to local storage
-                localStorage.setItem("userId", res.data._id); //save userid to local storage
-                localStorage.setItem("userAva", res.data.avatar);
-                localStorage.setItem("username", res.data.username);
-                localStorage.setItem("birthday", res.data.birthDay);
-                localStorage.setItem("bio", res.data.bio);
-                localStorage.setItem("loggedTime", date)
-                dispatch(loginSuccess());
-                toast.success("Login success!", {
-                  position: "top-right",
-                  autoClose: 1000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "colored",
-                });
-                navigate("/userlist");
-              }
-            })
-            .catch((err) => {
-              toast.error("Email or password incorrect", {
-                position: "top-right",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              });
+      loginAccount(data.get("email"), data.get("password"))
+        .then((res) => {
+          if (res.status === 200) {
+            localStorage.setItem("accessToken", res.data.accessToken); //save token to local storage
+            localStorage.setItem("userId", res.data._id); //save userid to local storage
+            localStorage.setItem("loggedTime", date);
+            dispatch(loginSuccess());
+            toast.success("Login success!", {
+              position: "top-right",
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
             });
-        } catch (err) {
-          console.error(err);
-        }
-      } else {
-        toast.error("something wrong, try again", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+            navigate("/userlist");
+          }
+        })
+        .catch((err) => {
+          toast.error("Email or password incorrect", {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
         });
-      }
     }
   };
 
@@ -136,28 +116,9 @@ export default function SignIn() {
     }
   };
 
-  const handleEmailFocus = () => {
-    setErrorEmailState(false);
-    setEmailHelper("");
-  };
-
-  const handlePasswordFocus = () => {
-    setErrorPasswordState(false);
-    setPasswordHelper("");
-  };
-
   useEffect(() => {
-    handleCheckEmail();
-  }, [email]);
-
-  useEffect(() => {
-    handleCheckPassword();
-  }, [password]);
-
-  useLayoutEffect(() => {
     if (auth === true) {
       navigate("/userlist");
-      window.location.reload();
     }
   }, [auth]);
 

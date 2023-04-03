@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutAccount } from '../../../utilities/apiClientPost';
 import { logout } from '../../../Redux/features/setAuth';
 import Popover from '@mui/material/Popover';
@@ -13,6 +13,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { getUserbyID } from '../../../utilities/apiClientGet';
 import { useEffect } from 'react';
+import { currentUserData } from '../../../Redux/features/setCurrentUser';
 
 export default function DashboardAva(){
 
@@ -21,11 +22,12 @@ export default function DashboardAva(){
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null)
     const userId = localStorage.getItem("userId")
-    const [user, setUser] = useState({})
+    const user = useSelector(state => state.user.data)
+    // const [user, setUser] = useState({})
 
     const handleGetUser = async () => {
-        const res = await getUserbyID(userId, token)
-        setUser(res.data)
+        const {data: res} = await getUserbyID(userId, token)
+        dispatch(currentUserData(res))
     }
 
     const handleClick = (event) => {

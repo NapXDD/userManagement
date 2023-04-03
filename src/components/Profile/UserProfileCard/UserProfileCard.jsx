@@ -4,11 +4,17 @@ import {
 import { avatarURL } from "../../../utilities/avatarURL";
 import { toast } from "react-toastify";
 import "./userProfileCard.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserbyID } from "../../../utilities/apiClientGet";
+import { userData } from "../../../Redux/features/setUser";
+import { currentUserData } from "../../../Redux/features/setCurrentUser";
 
-export default function UserProfileCard({ user }) {
+export default function UserProfileCard() {
   const token = localStorage.getItem("accessToken");
   const currentUserId = localStorage.getItem("userId");
-
+  const user = useSelector(state => state.user.data)
+  const dispatch = useDispatch()
+  
   const handleMouseEnter = () => {
     const changeElement = document.querySelector(".change-paragraph");
     if (changeElement !== null) {
@@ -32,9 +38,11 @@ export default function UserProfileCard({ user }) {
     };
 
     try {
-      updateUserAvatarByID(currentUserId, image, token).then((res) => {
+      const res = await updateUserAvatarByID(currentUserId, image, token)
         if (res.status === 200) {
-          console.log("update avatar success!");
+          const {data: res} = await getUserbyID(currentUserId, token)
+          dispatch(userData(res))
+          dispatch(currentUserData(res))
           toast.success("Change avatar success", {
             position: "top-right",
             autoClose: 1000,
@@ -45,11 +53,7 @@ export default function UserProfileCard({ user }) {
             progress: undefined,
             theme: "colored",
           });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
         }
-      });
     } catch (err) {
       console.error(err);
     }
