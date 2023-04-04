@@ -1,5 +1,11 @@
-@media screen and (max-width: 280) {
-    .menubar{
-        left: 0;
-    }
-}
+/* #search::-webkit-input-placeholder { 
+    border-radius: 10px;
+  } */
+
+  .searchBar{
+    border-radius: 10px;
+  }
+
+.searchBar  .MuiOutlinedInput-notchedOutline {
+    border-radius: 10px !important;
+  }

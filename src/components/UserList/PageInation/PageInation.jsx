@@ -5,18 +5,21 @@ import UserCard from '../UserCard/UserCard';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../Redux/features/setAuth';
+import { userListData } from '../../../Redux/features/setUseList';
+import { allUserListData } from '../../../Redux/features/setAllUserList';
 
 
 export function Items({currentItems}){
+
+    const currentUser = useSelector(state => state.currentUser.data)
+
     return(
         <div className='user-list-content'>
             {currentItems &&
             currentItems.map((item, index) => (
-                <div key={index}>
-                    {item}
-                </div>
+                <UserCard key={index} data={item} currentUser={currentUser}/>
             ))}
         </div>
     )
@@ -28,22 +31,26 @@ export default function PaginatedItems({ itemsPerPage }){
     const userId = localStorage.getItem("userId")
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const array = []
+    const items = useSelector(state => state.userList.list)
 
-    const [items, setItems] = useState([])
+    //const [items, setItems] = useState([])
 
     const handleGetAllUsers = async () => {
         try{
             const {data: res} = await getAllUser(token)
             const {data: currentUser } = await getUserbyID(userId, token)
-            res.map((user, index) => {
+            res.forEach((user, index) => {
                 if(currentUser._id !== user._id)
                 {
-                    items.push(<UserCard key={index} data={user} currentUser={currentUser}/>)
+                    array.push(user)
                 }
             })
-            setItems(items => [...items])
-            
+            dispatch(userListData([...array]))
+            dispatch(allUserListData([...array]))
+            array.length = 0  //hot fix
         }catch(err){
+            console.error(err)
             localStorage.clear()
             dispatch(logout())
             navigate("/signin")

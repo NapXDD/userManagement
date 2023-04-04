@@ -1,111 +1,136 @@
-import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import DashboardAva from './DashboardAva/DashboardAva';
-import { mainListItems, SecondaryListItems } from './listItems';
-import {
-  Outlet, useNavigate
-} from "react-router-dom";
-import { logoutAccount } from '../../utilities/apiClientPost';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../Redux/features/setAuth';
+import * as React from "react";
+import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import MuiDrawer from "@mui/material/Drawer";
+import Box from "@mui/material/Box";
+import MuiAppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Container from "@mui/material/Container";
+import Link from "@mui/material/Link";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import DashboardAva from "./DashboardAva/DashboardAva";
+import { mainListItems, SecondaryListItems } from "./listItems";
+import { Outlet, useNavigate } from "react-router-dom";
+import { logoutAccount } from "../../utilities/apiClientPost";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../Redux/features/setAuth";
 import { toast } from "react-toastify";
-
+import { TextField } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
+import "./dashboard.css";
+import { useState } from "react";
+import { useEffect } from "react";
+import { userListData } from "../../Redux/features/setUseList";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
       <Link color="inherit" href="http://127.0.0.1:5173/userlist">
         Your Website
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
 
-
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
-      transition: theme.transitions.create('width', {
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  "& .MuiDrawer-paper": {
+    position: "relative",
+    whiteSpace: "nowrap",
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: "border-box",
+    ...(!open && {
+      overflowX: "hidden",
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+      width: theme.spacing(7),
+      [theme.breakpoints.up("sm")]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
 const mdTheme = createTheme();
 
-function DashboardContent({title}) {
+function DashboardContent({ title }) {
   const [open, setOpen] = React.useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const token = localStorage.getItem("accessToken")
-  const userId = localStorage.getItem("userId")
+  const token = localStorage.getItem("accessToken");
+  const userId = localStorage.getItem("userId");
+  const [search, setSearch] = useState("");
+  const userList = useSelector(state => state.userList.list)
+  const allUserList = useSelector(state => state.allUserList.list)
+
+  const handleSearch = () => {
+    const result = userList.filter(user => user._id.includes(search.toLowerCase()) 
+      || user.username.toLowerCase().includes(search.toLowerCase())  
+      || user.email.toLowerCase().includes(search.toLowerCase()) )
+    dispatch(userListData([...result]))
+    if(search === ""){
+      dispatch(userListData([...allUserList]))
+    }
+  }
+
+  useEffect(() => {
+    handleSearch()
+  }, [search])
 
   const handleLogOut = async () => {
-    try{
-      const {status} = await logoutAccount(token, userId)
-      if(status === 200){
-        localStorage.clear()
-        dispatch(logout())
-        navigate("/")
-        toast.success('logout success', {
+    try {
+      const { status } = await logoutAccount(token, userId);
+      if (status === 200) {
+        localStorage.clear();
+        dispatch(logout());
+        navigate("/");
+        toast.success("logout success", {
           position: "top-right",
           autoClose: 1000,
           hideProgressBar: false,
@@ -114,24 +139,23 @@ function DashboardContent({title}) {
           draggable: true,
           progress: undefined,
           theme: "colored",
-          });
+        });
+      } else {
+        console.log(res);
       }
-      else{
-          console.log(res)
-      }
-    }catch(err){
-      console.error(err)
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   return (
     <ThemeProvider theme={mdTheme}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open} >
+        <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: '24px', // keep right padding when drawer closed
+              pr: "24px", // keep right padding when drawer closed
             }}
           >
             <IconButton
@@ -140,8 +164,8 @@ function DashboardContent({title}) {
               aria-label="open drawer"
               onClick={toggleDrawer}
               sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
+                marginRight: "36px",
+                ...(open && { display: "none" }),
               }}
             >
               <MenuIcon />
@@ -155,15 +179,42 @@ function DashboardContent({title}) {
             >
               {title}
             </Typography>
+            {title === "User list" ? (
+              <TextField
+                name="search"
+                type="text"
+                id="search"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                placeholder="Search"
+                variant="outlined"
+                sx={{
+                  width: "30%",
+                  backgroundColor: "#fff",
+                  input: {
+                    padding: "10px",
+                  },
+                }}
+                className="searchBar"
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            ) : (
+              <></>
+            )}
             <DashboardAva />
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open} className='menubar'>
+        <Drawer variant="permanent" open={open} className="menubar">
           <Toolbar
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
               px: [1],
             }}
           >
@@ -175,36 +226,36 @@ function DashboardContent({title}) {
           <List component="nav">
             {mainListItems}
             <Divider sx={{ my: 1 }} />
-            <SecondaryListItems 
-              handleLogOut={handleLogOut} 
-            />
+            <SecondaryListItems handleLogOut={handleLogOut} />
           </List>
         </Drawer>
         <Box
           component="main"
           sx={{
             backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
+              theme.palette.mode === "light"
                 ? theme.palette.grey[100]
                 : theme.palette.grey[900],
             flexGrow: 1,
-            height: '100vh',
-            overflow: 'auto',
+            height: "100vh",
+            overflow: "auto",
           }}
         >
-          <Toolbar/>
+          <Toolbar />
           <Container>
             <Outlet />
           </Container>
-          <Copyright sx={{ 
-            pt: 4 ,
-          }} />
+          <Copyright
+            sx={{
+              pt: 4,
+            }}
+          />
         </Box>
       </Box>
     </ThemeProvider>
   );
 }
 
-export default function Dashboard({title}) {
-  return <DashboardContent title={title}/>;
+export default function Dashboard({ title }) {
+  return <DashboardContent title={title} />;
 }
