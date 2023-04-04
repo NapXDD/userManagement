@@ -106,11 +106,10 @@ function DashboardContent({ title }) {
   const token = localStorage.getItem("accessToken");
   const userId = localStorage.getItem("userId");
   const [search, setSearch] = useState("");
-  const userList = useSelector(state => state.userList.list)
   const allUserList = useSelector(state => state.allUserList.list)
 
   const handleSearch = () => {
-    const result = userList.filter(user => user._id.includes(search.toLowerCase()) 
+    const result = allUserList.filter(user => user._id.includes(search.toLowerCase()) 
       || user.username.toLowerCase().includes(search.toLowerCase())  
       || user.email.toLowerCase().includes(search.toLowerCase()) )
     dispatch(userListData([...result]))
