@@ -14,6 +14,7 @@ import { registerAccount } from "../../utilities/apiClientPost";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useEffect } from "react";
+import "./register.css"
 
 function Copyright(props) {
   return (
@@ -270,16 +271,19 @@ export default function SignUp() {
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
+            
               <Grid item>
-                <Link className="" to="/signin">
-                  Already have an account? Sign in
+              <span>Already have an account? </span>
+                <Link className="signin" to="/signin">
+                   Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+        
       </Container>
+      <Copyright sx={{mt: 8, mb: 4, position: "absolute", bottom:"0", width: "100%" ,display: "flex", justifyContent: "center", alignItems: "center" }} />
     </ThemeProvider>
   );
 }

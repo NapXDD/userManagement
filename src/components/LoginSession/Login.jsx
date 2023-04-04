@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { getUserbyID } from "../../utilities/apiClientGet";
 import { currentUserData } from "../../Redux/features/setCurrentUser";
+import "./login.css"
 
 function Copyright(props) {
   return (
@@ -204,15 +205,16 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item>
-                <Link to="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <span>Don't have an account? </span>
+                <Link className="signup" to="/signup" variant="body2">
+                  Sign up
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
+      <Copyright sx={{ mt: 8, mb: 4, position: "absolute", bottom: 0, width: "100%",  }} />
     </ThemeProvider>
   );
 }
