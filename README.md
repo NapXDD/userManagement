@@ -5,7 +5,7 @@ User can be admin or not
 <p>In this project, we have login, register, changing avatar feature, etc</p> 
 <p>This project using ReactJS - Vite as a Frontend and NodeJS to interact with MongoDB as Backend</p>
 
-<p>You can check out my demo <a href="https://user-management-4a7t-e7b7b8g38-napxdd.vercel.app">here</a></p>
+<p>You can check out my demo <a href="https://user-management-4a7t.vercel.app">here</a></p>
 <p>You can check my Backend <a href="https://github.com/NapXDD/backend_userManagement">here</a></p>
 
 For storing image, this project using Cloudinary to store image on cloud
