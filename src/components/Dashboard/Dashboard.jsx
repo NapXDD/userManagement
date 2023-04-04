@@ -176,6 +176,7 @@ function DashboardContent({ title }) {
               color="inherit"
               noWrap
               sx={{ flexGrow: 1 }}
+              className="title"
             >
               {title}
             </Typography>

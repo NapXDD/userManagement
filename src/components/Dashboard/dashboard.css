@@ -9,3 +9,12 @@
 .searchBar  .MuiOutlinedInput-notchedOutline {
     border-radius: 10px !important;
   }
+
+  @media screen and (max-width: 1000px) {
+    .searchBar.MuiFormControl-root{
+        width: 100%;
+    }
+    .title.MuiTypography-root{
+        display: none;
+    }
+  }
