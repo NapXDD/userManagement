@@ -120,7 +120,7 @@ export default function SignUp() {
       setUsernameHelper("username cannot be empty");
     } else if (username.length <= 4) {
       setErrorUsernameState(true);
-      setUsernameHelper("username must be longer or equal to 4");
+      setUsernameHelper("username must be longer or equal to 5");
     } else if (username.length > 4) {
       setErrorUsernameState(false);
       setUsernameHelper("");
