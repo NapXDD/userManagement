@@ -29,12 +29,15 @@ export default function Profile() {
     <div className='profile-container'>
       <div className='profile-card'></div>
       <UserProfileCard id={id} user={user}/>
-      {
+      <div className='setting-card'>
+        <UserProfileSetting user={user}/>
+      </div>
+      {/* {
         currentUserId !== user._id ? <></> : 
         <div className='setting-card'>
           <UserProfileSetting user={user}/>
         </div>
-      }
+      } */}
     </div>
   );
 }

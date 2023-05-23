@@ -4,7 +4,7 @@ import "./userProfileSetting.css"
 import BasicDatePicker from '../../../utilities/component/datepicker/datepicker';
 import { updateUserbyID } from '../../../utilities/apiClientPut';
 import { toast } from "react-toastify";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../../Redux/features/setUser';
 import { getUserbyID } from '../../../utilities/apiClientGet';
 
@@ -13,11 +13,14 @@ export default function UserProfileSetting({user}){
     const dispatch = useDispatch()
     const userId = localStorage.getItem("userId")
     const token = localStorage.getItem("accessToken")
+    const currentUser = useSelector((state) => state.currentUser.data)
     const [newData, setNewData] = useState({
         username: user.username,
         bio: user.bio,
         birthDay: user.birthDay
     })
+
+    console.log(currentUser.isAdmin)
     
     const [date, setDate] = useState(user.birthDay)
     const birthDay = user.birthDay.split("-")
@@ -91,6 +94,7 @@ export default function UserProfileSetting({user}){
                     onChange= {handleChange}
                     fullWidth
                     margin="normal"
+                    disabled={currentUser.isAdmin === true ? false : true}
                 />
                 <BasicDatePicker 
                     description={"Date of birth"}
