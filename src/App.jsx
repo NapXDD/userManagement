@@ -16,6 +16,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { logoutAccount } from "./utilities/apiClientPost";
 import { loginFail, logout } from "./Redux/features/setAuth";
 import Blank from "./components/Blank/Blank";
+import Posts from "./components/Posts/Posts";
+import Post from "./components/Posts/component/Post";
 
 function App() {
   const dispatch = useDispatch();
@@ -42,6 +44,10 @@ function App() {
     }
     case "userlist": {
       title = "User list";
+      break;
+    }
+    case "posts": {
+      title = "Posts";
       break;
     }
   }
@@ -108,6 +114,8 @@ function App() {
           <Route path="profile/:id" element={<Profile />} />
           <Route path="changepassword/user/:id" element={<ChangePassword />} />
           <Route path="deleteAccount/user/:id" element={<DeleteAccount />} />
+          <Route path="posts" element={<Posts />} />
+          <Route path="posts/post/:id" element={<Post />} />
         </Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>

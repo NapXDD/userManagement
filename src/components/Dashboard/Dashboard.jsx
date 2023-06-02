@@ -106,21 +106,24 @@ function DashboardContent({ title }) {
   const token = localStorage.getItem("accessToken");
   const userId = localStorage.getItem("userId");
   const [search, setSearch] = useState("");
-  const allUserList = useSelector(state => state.allUserList.list)
+  const allUserList = useSelector((state) => state.allUserList.list);
 
   const handleSearch = () => {
-    const result = allUserList.filter(user => user._id.includes(search.toLowerCase()) 
-      || user.username.toLowerCase().includes(search.toLowerCase())  
-      || user.email.toLowerCase().includes(search.toLowerCase()) )
-    dispatch(userListData([...result]))
-    if(search === ""){
-      dispatch(userListData([...allUserList]))
+    const result = allUserList.filter(
+      (user) =>
+        user._id.includes(search.toLowerCase()) ||
+        user.username.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+    );
+    dispatch(userListData([...result]));
+    if (search === "") {
+      dispatch(userListData([...allUserList]));
     }
-  }
+  };
 
   useEffect(() => {
-    handleSearch()
-  }, [search])
+    handleSearch();
+  }, [search]);
 
   const handleLogOut = async () => {
     try {
@@ -155,6 +158,8 @@ function DashboardContent({ title }) {
           <Toolbar
             sx={{
               pr: "24px", // keep right padding when drawer closed
+              display: "flex",
+              justifyContent: "space-between",
             }}
           >
             <IconButton
