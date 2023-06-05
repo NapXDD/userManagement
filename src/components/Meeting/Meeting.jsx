@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "antd";
 import { Box, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -11,37 +11,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useSelector } from "react-redux";
 import BasicTimePicker from "../../utilities/component/datepicker/timepicker";
 import BasicDatePicker from "../../utilities/component/datepicker/datepicker";
-
-const data = [
-  {
-    key: "1",
-    roomName: "John Brown",
-    requester: "John Brown",
-    address: "New York No. 1 Lake Park",
-    action: [<Button>Delete</Button>],
-  },
-  {
-    key: "2",
-    roomName: "Jim Green",
-    requester: "Jim Green",
-    address: "London No. 1 Lake Park",
-    action: [<Button>Delete</Button>],
-  },
-  {
-    key: "3",
-    roomName: "Joe Black",
-    requester: "Joe Black",
-    address: "Sydney No. 1 Lake Park",
-    action: [<Button>Delete</Button>],
-  },
-  {
-    key: "4",
-    roomName: "Jim Red",
-    requester: "Jim Red",
-    address: "London No. 2 Lake Park",
-    action: [<Button>Delete</Button>],
-  },
-];
+import { addMeeting } from "../../utilities/Meeting_API/apiClientPost_Meeting";
+import { toast } from "react-toastify";
+import { getAllMeeting } from "../../utilities/Meeting_API/apiClientGet_Meeting";
 
 const Meeting = () => {
   const [sortedInfo, setSortedInfo] = useState({});
@@ -49,12 +21,17 @@ const Meeting = () => {
   const currentUser = useSelector((state) => state.currentUser.data);
   const [date, setDate] = useState("21-12-2023");
   const YMD = date.split("-").reverse().join("-");
+  const [meeting, setMeeting] = useState([]);
   const [newData, setNewData] = useState({
     roomName: "Room111",
     time: `${YMD}T03:30:03`,
-    requesterName: currentUser.username,
-    requesterID: currentUser._id,
+    requesterName: `${currentUser.username}`,
+    requesterID: `${currentUser._id}`,
   });
+
+  const token = localStorage.getItem("accessToken");
+
+  console.log(meeting);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -69,8 +46,33 @@ const Meeting = () => {
     setSortedInfo(sorter);
   };
 
-  const handleCreateMeeting = () => {
-    console.log(newData);
+  const handleCreateMeeting = async () => {
+    try {
+      const res = await addMeeting(newData, token);
+      if (res.status === 200) {
+        toast.success("Meeting created, waiting for approve", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (e) {
+      toast.error(e, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
     setOpen(false);
   };
 
@@ -120,11 +122,11 @@ const Meeting = () => {
         ellipsis: true,
       },
       {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        sorter: (a, b) => a.address.length - b.address.length,
-        sortOrder: sortedInfo.columnKey === "address" ? sortedInfo.order : null,
+        title: "Meeting time",
+        dataIndex: "time",
+        key: "time",
+        sorter: (a, b) => a.time.length - b.time.length,
+        sortOrder: sortedInfo.columnKey === "time" ? sortedInfo.order : null,
         ellipsis: true,
       },
       {
@@ -163,6 +165,39 @@ const Meeting = () => {
       },
     ];
   }
+
+  const handleGetAllMeeting_CallAPI = async () => {
+    try {
+      let array = [];
+      let object = {
+        key: "",
+        roomName: "",
+        requester: "",
+        time: "",
+        action: <Button>Delete</Button>,
+      };
+      const { data: res } = await getAllMeeting(token);
+      res.forEach((item) => {
+        if (item.approveStatus === true) {
+          object = {
+            ...object,
+            key: item._id,
+            roomName: item.roomName,
+            requester: item.requesterName,
+            time: item.dateTime,
+          };
+          array.push(object);
+        }
+      });
+      setMeeting(array);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    handleGetAllMeeting_CallAPI();
+  }, []);
 
   return (
     <>
@@ -215,7 +250,7 @@ const Meeting = () => {
             <Button onClick={handleCreateMeeting}>Create Meeting</Button>
           </DialogActions>
         </Dialog>
-        <Table columns={columns} dataSource={data} onChange={handleChange} />
+        <Table columns={columns} dataSource={meeting} onChange={handleChange} />
       </Box>
     </>
   );

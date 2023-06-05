@@ -61,7 +61,7 @@ export const SecondaryListItems = ({ handleLogOut }) => {
       </ListSubheader>
 
       {currentUser.isAdmin === true ? (
-        <Link to={`/dashboard/changepassword/user/${userId}`}>
+        <Link to={"/dashboard/approveMeeting"}>
           <ListItemButton>
             <ListItemIcon>
               <LockOpenIcon />
