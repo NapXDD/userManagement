@@ -5,10 +5,10 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import PeopleIcon from "@mui/icons-material/People";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const mainListItems = (
   <React.Fragment>
@@ -20,6 +20,7 @@ export const mainListItems = (
         <ListItemText primary="User list" />
       </ListItemButton>
     </Link>
+
     <Link to="/dashboard/posts">
       <ListItemButton>
         <ListItemIcon>
@@ -28,17 +29,49 @@ export const mainListItems = (
         <ListItemText primary="Posts" />
       </ListItemButton>
     </Link>
+
+    <Link to="/dashboard/meeting">
+      <ListItemButton>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Meeting" />
+      </ListItemButton>
+    </Link>
+
+    <Link to="/dashboard/achievement">
+      <ListItemButton>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Storage" />
+      </ListItemButton>
+    </Link>
   </React.Fragment>
 );
 
 export const SecondaryListItems = ({ handleLogOut }) => {
   const userId = localStorage.getItem("userId");
+  const currentUser = useSelector((state) => state.currentUser.data);
 
   return (
     <React.Fragment>
       <ListSubheader component="div" inset>
         Your settings
       </ListSubheader>
+
+      {currentUser.isAdmin === true ? (
+        <Link to={`/dashboard/changepassword/user/${userId}`}>
+          <ListItemButton>
+            <ListItemIcon>
+              <LockOpenIcon />
+            </ListItemIcon>
+            <ListItemText primary="Approve Meeting" />
+          </ListItemButton>
+        </Link>
+      ) : (
+        <></>
+      )}
 
       <Link to={`/dashboard/changepassword/user/${userId}`}>
         <ListItemButton>

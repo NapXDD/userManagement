@@ -7,3 +7,11 @@ export async function getAllPosts(token) {
     },
   });
 }
+
+export async function getPostbyID(postId, token) {
+  return axiosClient.get(`/v1/posts/${postId}`, {
+    headers: {
+      token: `Bearer ${token}`,
+    },
+  });
+}

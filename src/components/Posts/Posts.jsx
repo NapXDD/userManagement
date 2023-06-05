@@ -21,6 +21,8 @@ export default function Posts() {
   const [posts, setPosts] = useState([]);
   const token = localStorage.getItem("accessToken");
 
+  const reversed = [...posts].reverse();
+
   let newPost = {
     title: "",
     content: "",
@@ -159,7 +161,7 @@ export default function Posts() {
           </DialogActions>
         </Dialog>
       </Box>
-      {posts.map((post) => {
+      {reversed.map((post) => {
         return <PostCard key={post._id} data={post} />;
       })}
     </>

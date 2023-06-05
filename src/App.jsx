@@ -18,6 +18,8 @@ import { loginFail, logout } from "./Redux/features/setAuth";
 import Blank from "./components/Blank/Blank";
 import Posts from "./components/Posts/Posts";
 import Post from "./components/Posts/component/Post";
+import EditPost from "./components/Posts/component/EditPost/EditPost";
+import Meeting from "./components/Meeting/Meeting";
 
 function App() {
   const dispatch = useDispatch();
@@ -48,6 +50,10 @@ function App() {
     }
     case "posts": {
       title = "Posts";
+      break;
+    }
+    case "meeting": {
+      title = "Meeting";
       break;
     }
   }
@@ -116,6 +122,8 @@ function App() {
           <Route path="deleteAccount/user/:id" element={<DeleteAccount />} />
           <Route path="posts" element={<Posts />} />
           <Route path="posts/post/:id" element={<Post />} />
+          <Route path="posts/edit/:id" element={<EditPost />} />
+          <Route path="meeting" element={<Meeting />} />
         </Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>

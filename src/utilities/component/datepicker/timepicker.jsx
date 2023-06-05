@@ -1,15 +1,13 @@
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
 
-export default function BasicDatePicker({
+export default function BasicTimePicker({
   description,
   onChange,
   defaultValue,
-  disableFuture,
-  disablePast,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -17,21 +15,18 @@ export default function BasicDatePicker({
         sx={{
           width: "100%",
         }}
-        components={["DatePicker"]}
+        components={["TimePicker"]}
       >
-        <DatePicker
+        <TimePicker
           label={description}
-          format="DD-MM-YYYY"
-          onChange={onChange}
-          margin="normal"
-          disableFuture={false || disableFuture}
-          disablePast={false || disablePast}
-          defaultValue={dayjs(`${defaultValue}`)}
+          value={dayjs(`${defaultValue}`)}
+          //   onChange={onChange}
           sx={{
             width: "100%",
             display: "flex",
             flexDirection: "column",
           }}
+          onChange={onChange}
         />
       </DemoContainer>
     </LocalizationProvider>
