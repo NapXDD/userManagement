@@ -126,6 +126,7 @@ function App() {
           <Route path="posts/edit/:id" element={<EditPost />} />
           <Route path="meeting" element={<Meeting />} />
           <Route path="approveMeeting" element={<ApproveMeeting />} />
+          <Route path="storage" element={<Storage />} />
         </Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>

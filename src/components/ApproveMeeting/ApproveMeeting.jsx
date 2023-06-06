@@ -9,11 +9,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { getAllMeeting } from "../../utilities/Meeting_API/apiClientGet_Meeting";
+import { updateMeetingbyID } from "../../utilities/Meeting_API/apiClientPut_Meeting";
+import { toast } from "react-toastify";
 
 const ApproveMeeting = () => {
   const [sortedInfo, setSortedInfo] = useState({});
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState("21-12-2023");
   const [meeting, setMeeting] = useState([]);
   const [newData, setNewData] = useState({
     id: "",
@@ -22,8 +23,6 @@ const ApproveMeeting = () => {
   const [flag, setFlag] = useState(false);
 
   const token = localStorage.getItem("accessToken");
-
-  console.log(meeting);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -38,12 +37,47 @@ const ApproveMeeting = () => {
     setSortedInfo(sorter);
   };
 
-  const handleApprove = (id) => {
+  // call api for update approve to true
+  const handleApproveMeeting = async () => {
+    let payload = {
+      approveStatus: true,
+    };
+    try {
+      const res = await updateMeetingbyID(newData.id, payload, token);
+      if (res.status === 200) {
+        handleClose();
+        setFlag(!flag);
+        toast.success("Meeting Approved", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (e) {
+      toast.error(e, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+
+  const handleOpenApprove = (id) => {
     setNewData({
       ...newData,
       id: id,
     });
-    setFlag(!flag);
+    handleClickOpen();
   };
 
   let columns = [
@@ -99,7 +133,9 @@ const ApproveMeeting = () => {
             requester: item.requesterName,
             time: item.dateTime,
             action: (
-              <Button onClick={() => handleApprove(item._id)}>Approve</Button>
+              <Button onClick={() => handleOpenApprove(item._id)}>
+                Approve
+              </Button>
             ),
           };
           array.push(object);
@@ -117,6 +153,18 @@ const ApproveMeeting = () => {
 
   return (
     <>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Approve Meeting</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to approve this meeting ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleApproveMeeting}>Approve Meeting</Button>
+        </DialogActions>
+      </Dialog>
       <Box sx={{ marginTop: 4 }}>
         <Table columns={columns} dataSource={meeting} onChange={handleChange} />
       </Box>
