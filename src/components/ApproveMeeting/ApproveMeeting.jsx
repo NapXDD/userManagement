@@ -15,6 +15,11 @@ const ApproveMeeting = () => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState("21-12-2023");
   const [meeting, setMeeting] = useState([]);
+  const [newData, setNewData] = useState({
+    id: "",
+    approveStatus: true,
+  });
+  const [flag, setFlag] = useState(false);
 
   const token = localStorage.getItem("accessToken");
 
@@ -31,6 +36,14 @@ const ApproveMeeting = () => {
   const handleChange = (pagination, filter, sorter) => {
     console.log("Various parameters", pagination, filter, sorter);
     setSortedInfo(sorter);
+  };
+
+  const handleApprove = (id) => {
+    setNewData({
+      ...newData,
+      id: id,
+    });
+    setFlag(!flag);
   };
 
   let columns = [
@@ -85,6 +98,9 @@ const ApproveMeeting = () => {
             roomName: item.roomName,
             requester: item.requesterName,
             time: item.dateTime,
+            action: (
+              <Button onClick={() => handleApprove(item._id)}>Approve</Button>
+            ),
           };
           array.push(object);
         }
@@ -97,11 +113,11 @@ const ApproveMeeting = () => {
 
   useEffect(() => {
     handleGetAllMeeting_CallAPI();
-  }, []);
+  }, [flag]);
 
   return (
     <>
-      <Box sx={{ marginTop: 3 }}>
+      <Box sx={{ marginTop: 4 }}>
         <Table columns={columns} dataSource={meeting} onChange={handleChange} />
       </Box>
     </>
