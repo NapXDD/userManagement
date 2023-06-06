@@ -14,6 +14,7 @@ import BasicDatePicker from "../../utilities/component/datepicker/datepicker";
 import { addMeeting } from "../../utilities/Meeting_API/apiClientPost_Meeting";
 import { toast } from "react-toastify";
 import { getAllMeeting } from "../../utilities/Meeting_API/apiClientGet_Meeting";
+import { deleteMeeting } from "../../utilities/Meeting_API/apiClientDelete_Meeting";
 
 const Meeting = () => {
   const [sortedInfo, setSortedInfo] = useState({});
@@ -28,6 +29,7 @@ const Meeting = () => {
     requesterName: `${currentUser.username}`,
     requesterID: `${currentUser._id}`,
   });
+  const [flag, setFlag] = useState(false);
 
   const token = localStorage.getItem("accessToken");
 
@@ -97,6 +99,36 @@ const Meeting = () => {
       ...newData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleDeleteMeeting = async (id) => {
+    try {
+      const res = await deleteMeeting(id, token);
+      if (res.status === 200) {
+        toast.success("Meeting deleted", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setFlag(!flag);
+      }
+    } catch (e) {
+      toast.error(e, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   };
 
   let columns;
@@ -185,6 +217,11 @@ const Meeting = () => {
             roomName: item.roomName,
             requester: item.requesterName,
             time: item.dateTime,
+            action: (
+              <Button onClick={() => handleDeleteMeeting(item._id, token)}>
+                Delete
+              </Button>
+            ),
           };
           array.push(object);
         }
@@ -197,7 +234,7 @@ const Meeting = () => {
 
   useEffect(() => {
     handleGetAllMeeting_CallAPI();
-  }, []);
+  }, [flag]);
 
   return (
     <>

@@ -39,7 +39,7 @@ export const mainListItems = (
       </ListItemButton>
     </Link>
 
-    <Link to="/dashboard/achievement">
+    <Link to="/dashboard/storage">
       <ListItemButton>
         <ListItemIcon>
           <PeopleIcon />

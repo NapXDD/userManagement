@@ -21,6 +21,7 @@ import Post from "./components/Posts/component/Post";
 import EditPost from "./components/Posts/component/EditPost/EditPost";
 import Meeting from "./components/Meeting/Meeting";
 import ApproveMeeting from "./components/ApproveMeeting/ApproveMeeting";
+import Storage from "./components/Storage/Storage";
 
 function App() {
   const dispatch = useDispatch();
