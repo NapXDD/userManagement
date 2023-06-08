@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Table } from "antd";
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -11,6 +10,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { getAllMeeting } from "../../utilities/Meeting_API/apiClientGet_Meeting";
 import { updateMeetingbyID } from "../../utilities/Meeting_API/apiClientPut_Meeting";
 import { toast } from "react-toastify";
+import { deleteMeeting } from "../../utilities/Meeting_API/apiClientDelete_Meeting";
 
 const ApproveMeeting = () => {
   const [sortedInfo, setSortedInfo] = useState({});
@@ -35,6 +35,36 @@ const ApproveMeeting = () => {
   const handleChange = (pagination, filter, sorter) => {
     console.log("Various parameters", pagination, filter, sorter);
     setSortedInfo(sorter);
+  };
+
+  const handleDeleteMeeting = async (id) => {
+    try {
+      const res = await deleteMeeting(id, token);
+      if (res.status === 200) {
+        toast.success("Meeting deleted", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setFlag(!flag);
+      }
+    } catch (e) {
+      toast.error(e, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   };
 
   // call api for update approve to true
@@ -85,24 +115,18 @@ const ApproveMeeting = () => {
       title: "Room number",
       dataIndex: "roomName",
       key: "roomName",
-      sorter: (a, b) => a.roomName.length - b.roomName.length,
-      sortOrder: sortedInfo.columnKey === "roomName" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
       title: "Requester",
       dataIndex: "requester",
       key: "requester",
-      sorter: (a, b) => a.requester - b.requester,
-      sortOrder: sortedInfo.columnKey === "requester" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
       title: "Meeting time",
       dataIndex: "time",
       key: "time",
-      sorter: (a, b) => a.time.length - b.time.length,
-      sortOrder: sortedInfo.columnKey === "time" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
@@ -121,26 +145,38 @@ const ApproveMeeting = () => {
         roomName: "",
         requester: "",
         time: "",
-        action: <Button>Approve</Button>,
+        action: [<Button>Approve</Button>, <Button>Delete</Button>],
       };
       const { data: res } = await getAllMeeting(token);
       res.forEach((item) => {
         if (item.approveStatus === false) {
+          let dateTime = item.dateTime.split("T");
+          let date = dateTime[0].split("-").join("/");
+          let time = dateTime[1].split(".")[0].split(":");
+          let hour = time[0];
+          let minute = time[1];
+          dateTime = `${date} ${hour}:${minute}`;
           object = {
             ...object,
             key: item._id,
             roomName: item.roomName,
             requester: item.requesterName,
-            time: item.dateTime,
+            time: dateTime,
             action: (
-              <Button onClick={() => handleOpenApprove(item._id)}>
-                Approve
-              </Button>
+              <>
+                <Button onClick={() => handleOpenApprove(item._id)}>
+                  Approve
+                </Button>
+                <Button onClick={() => handleDeleteMeeting(item._id, token)}>
+                  Delete
+                </Button>
+              </>
             ),
           };
           array.push(object);
         }
       });
+      array.reverse();
       setMeeting(array);
     } catch (e) {
       console.log(e);

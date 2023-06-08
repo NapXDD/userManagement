@@ -27,6 +27,7 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth.value);
+  const currentUser = useSelector((state) => state.currentUser.data);
   const date = new Date();
 
   const urlTitle = window.location.href.split("/")[4];
@@ -121,13 +122,22 @@ function App() {
           <Route path="userlist" element={<UserList />} />
           <Route path="profile/:id" element={<Profile />} />
           <Route path="changepassword/user/:id" element={<ChangePassword />} />
-          <Route path="deleteAccount/user/:id" element={<DeleteAccount />} />
           <Route path="posts" element={<Posts />} />
           <Route path="posts/post/:id" element={<Post />} />
-          <Route path="posts/edit/:id" element={<EditPost />} />
           <Route path="meeting" element={<Meeting />} />
-          <Route path="approveMeeting" element={<ApproveMeeting />} />
           <Route path="storage" element={<Storage />} />
+          {currentUser.isAdmin === true ? (
+            <>
+              <Route path="posts/edit/:id" element={<EditPost />} />
+              <Route path="approveMeeting" element={<ApproveMeeting />} />
+              <Route
+                path="deleteAccount/user/:id"
+                element={<DeleteAccount />}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>

@@ -15,25 +15,25 @@ import { addMeeting } from "../../utilities/Meeting_API/apiClientPost_Meeting";
 import { toast } from "react-toastify";
 import { getAllMeeting } from "../../utilities/Meeting_API/apiClientGet_Meeting";
 import { deleteMeeting } from "../../utilities/Meeting_API/apiClientDelete_Meeting";
+import dayjs from "dayjs";
+import { getCurrentYMD } from "../../utilities/DateTime/getDate";
 
 const Meeting = () => {
-  const [sortedInfo, setSortedInfo] = useState({});
   const [open, setOpen] = useState(false);
   const currentUser = useSelector((state) => state.currentUser.data);
-  const [date, setDate] = useState("21-12-2023");
-  const YMD = date.split("-").reverse().join("-");
+  const [date, setDate] = useState(getCurrentYMD());
+  const [time, setTime] = useState("03:30:30");
   const [meeting, setMeeting] = useState([]);
   const [newData, setNewData] = useState({
     roomName: "Room111",
-    time: `${YMD}T03:30:03`,
+    time: `${date}T${time}`,
     requesterName: `${currentUser.username}`,
     requesterID: `${currentUser._id}`,
   });
+
   const [flag, setFlag] = useState(false);
 
   const token = localStorage.getItem("accessToken");
-
-  console.log(meeting);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,10 +88,7 @@ const Meeting = () => {
 
   const handleChangeTime = (e) => {
     let time = `${e.$d}`.split(" ");
-    setNewData({
-      ...newData,
-      time: `${YMD}T${time[4]}`,
-    });
+    setTime(time[4]);
   };
 
   const handleChangeValue = (e) => {
@@ -139,26 +136,17 @@ const Meeting = () => {
         title: "Room number",
         dataIndex: "roomName",
         key: "roomName",
-        sorter: (a, b) => a.roomName.length - b.roomName.length,
-        sortOrder:
-          sortedInfo.columnKey === "roomName" ? sortedInfo.order : null,
         ellipsis: true,
       },
       {
         title: "Requester",
         dataIndex: "requester",
-        key: "requester",
-        sorter: (a, b) => a.requester - b.requester,
-        sortOrder:
-          sortedInfo.columnKey === "requester" ? sortedInfo.order : null,
         ellipsis: true,
       },
       {
         title: "Meeting time",
         dataIndex: "time",
         key: "time",
-        sorter: (a, b) => a.time.length - b.time.length,
-        sortOrder: sortedInfo.columnKey === "time" ? sortedInfo.order : null,
         ellipsis: true,
       },
       {
@@ -174,25 +162,18 @@ const Meeting = () => {
         title: "Room number",
         dataIndex: "roomName",
         key: "roomName",
-        sorter: (a, b) => a.name.length - b.name.length,
-        sortOrder:
-          sortedInfo.columnKey === "roomName" ? sortedInfo.order : null,
         ellipsis: true,
       },
       {
         title: "Requester",
         dataIndex: "requester",
         key: "requester",
-        sorter: (a, b) => a.age - b.age,
-        sortOrder: sortedInfo.columnKey === "age" ? sortedInfo.order : null,
         ellipsis: true,
       },
       {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        sorter: (a, b) => a.address.length - b.address.length,
-        sortOrder: sortedInfo.columnKey === "address" ? sortedInfo.order : null,
+        title: "Meeting time",
+        dataIndex: "time",
+        key: "time",
         ellipsis: true,
       },
     ];
@@ -211,12 +192,18 @@ const Meeting = () => {
       const { data: res } = await getAllMeeting(token);
       res.forEach((item) => {
         if (item.approveStatus === true) {
+          let dateTime = item.dateTime.split("T");
+          let date = dateTime[0].split("-").reverse().join("/");
+          let time = dateTime[1].split(".")[0].split(":");
+          let hour = time[0];
+          let minute = time[1];
+          dateTime = `${date} ${hour}:${minute}`;
           object = {
             ...object,
             key: item._id,
             roomName: item.roomName,
             requester: item.requesterName,
-            time: item.dateTime,
+            time: dateTime,
             action: (
               <Button onClick={() => handleDeleteMeeting(item._id, token)}>
                 Delete
@@ -226,6 +213,7 @@ const Meeting = () => {
           array.push(object);
         }
       });
+      array.reverse();
       setMeeting(array);
     } catch (e) {
       console.log(e);
@@ -235,6 +223,16 @@ const Meeting = () => {
   useEffect(() => {
     handleGetAllMeeting_CallAPI();
   }, [flag]);
+
+  useEffect(() => {
+    setNewData({
+      ...newData,
+      roomName: newData.roomName,
+      time: `${date}T${time}`,
+      requesterName: `${currentUser.username}`,
+      requesterID: `${currentUser._id}`,
+    });
+  }, [date, time]);
 
   return (
     <>
@@ -275,10 +273,10 @@ const Meeting = () => {
               description={"Date of Meeting"}
               onChange={handleChangeDate}
               disablePast={true}
-              defaultValue={"21-12-2023"}
+              defaultValue={dayjs(date)}
             />
             <BasicTimePicker
-              defaultValue={`${YMD}T03:30`}
+              defaultValue={`${getCurrentYMD()}T${time}`}
               onChange={handleChangeTime}
             />
           </DialogContent>

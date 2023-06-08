@@ -14,7 +14,6 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import DashboardAva from "./DashboardAva/DashboardAva";
-import { mainListItems, SecondaryListItems } from "./listItems";
 import { Outlet, useNavigate } from "react-router-dom";
 import { logoutAccount } from "../../utilities/apiClientPost";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,6 +26,7 @@ import "./dashboard.css";
 import { useState } from "react";
 import { useEffect } from "react";
 import { userListData } from "../../Redux/features/setUseList";
+import { mainListItems, SecondaryListItems } from "./ListItems";
 
 function Copyright(props) {
   return (
