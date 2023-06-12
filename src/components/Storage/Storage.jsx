@@ -18,6 +18,9 @@ export default function Storage() {
   const [fileName, setFileName] = useState("");
   const [docs, setDocs] = useState([]);
   const [tail, setTail] = useState("")
+  const [newData, setNewData] = useState({
+    
+  })
   const token = localStorage.getItem("accessToken");
 
   const reversed = [...docs].reverse();
