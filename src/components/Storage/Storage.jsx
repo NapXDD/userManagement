@@ -11,16 +11,20 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import StorageCard from "./component/StorageCard/StorageCard";
+import { getCurrentYMD } from "../../utilities/DateTime/getDate";
+import {
+  addDocDOC,
+  addDocDOCX,
+  addDocPDF,
+} from "../../utilities/Docs_API/apiClientPost_Docs";
 
 export default function Storage() {
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
   const [docs, setDocs] = useState([]);
-  const [tail, setTail] = useState("")
-  const [newData, setNewData] = useState({
-    
-  })
+  const [tail, setTail] = useState("");
+  const [flag, setFlag] = useState(false);
   const token = localStorage.getItem("accessToken");
 
   const reversed = [...docs].reverse();
@@ -53,7 +57,7 @@ export default function Storage() {
     let fileName = filePath.pop();
     let tail = fileName.split(".").pop();
     if (tail === "pdf" || tail === "doc" || tail === "docx") {
-      setTail(tail)
+      setTail(tail);
       setFileName(fileName);
     } else {
       toast.error("Please provide file with PDF, DOC or DOCX type only", {
@@ -70,39 +74,74 @@ export default function Storage() {
   };
 
   const handleUploadFile = () => {
-    console.log(fileName);
-    setFileName("");
-    handleClose();
+    if (fileName === "" || description === "") {
+      toast.error("Please fill both the input", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      let newData = {
+        docName: fileName,
+        description: description,
+        submitDate: getCurrentYMD(),
+        uploadBy: currentUser.username,
+        uploaderID: currentUser._id,
+      };
+      handleCreateDoc_CallAPI(newData, token);
+      setFileName("");
+      setDescription("");
+      handleClose();
+    }
   };
 
-  // const handleCreatePost_CallAPI = async (req, token) => {
-  //   try {
-  //     const res = await addPost(req, token);
-  //     if (res.status === 200) {
-  //       toast.success("Post created", {
-  //         position: "top-right",
-  //         autoClose: 1000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "colored",
-  //       });
-  //     }
-  //   } catch (e) {
-  //     toast.error(e, {
-  //       position: "top-right",
-  //       autoClose: 1000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "colored",
-  //     });
-  //   }
-  // };
+  const handleCreateDoc_CallAPI = async (req, token) => {
+    let res;
+    try {
+      switch (tail) {
+        case "pdf": {
+          res = await addDocPDF(req, token);
+        }
+        case "doc": {
+          res = await addDocDOC(req, token);
+        }
+        case "docx": {
+          res = await addDocDOCX(req, token);
+        }
+        default: {
+          console.log("lmao");
+        }
+      }
+      if (res.status === 200) {
+        toast.success("Doc created", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (e) {
+      toast.error(e, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
 
   // const handleGetAllPosts_CallAPI = async () => {
   //   try {
@@ -115,7 +154,7 @@ export default function Storage() {
 
   // useEffect(() => {
   //   handleGetAllPosts_CallAPI();
-  // }, []);
+  // }, [flag]);
 
   return (
     <>

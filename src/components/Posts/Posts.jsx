@@ -19,6 +19,7 @@ export default function Posts() {
   const [content, setContent] = useState("");
   const [open, setOpen] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [flag, setFlag] = useState(false);
   const token = localStorage.getItem("accessToken");
 
   const reversed = [...posts].reverse();
@@ -61,7 +62,7 @@ export default function Posts() {
     };
 
     handleCreatePost_CallAPI(newPost, token);
-
+    setFlag(!flag);
     setOpen(false);
   };
 
@@ -113,7 +114,7 @@ export default function Posts() {
 
   useEffect(() => {
     handleGetAllPosts_CallAPI();
-  }, []);
+  }, [flag]);
 
   return (
     <>
