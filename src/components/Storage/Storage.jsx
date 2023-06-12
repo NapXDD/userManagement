@@ -22,6 +22,9 @@ export default function Storage() {
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [file, setFile] = useState({
+    file: {},
+  });
   const [docs, setDocs] = useState([]);
   const [tail, setTail] = useState("");
   const [flag, setFlag] = useState(false);
@@ -29,6 +32,8 @@ export default function Storage() {
 
   const reversed = [...docs].reverse();
   const currentUser = useSelector((state) => state.currentUser.data);
+
+  console.log(file);
 
   const handleCreatePost = () => {
     // newPost = {
@@ -53,12 +58,20 @@ export default function Storage() {
   };
 
   const handleUpload = (e) => {
+    const uploadData = new FormData();
+
+    uploadData.append("image", e.target.files[0], e.target.files[0].name);
+
+    const file = {
+      file: uploadData.get("image"),
+    };
+
     let filePath = e.target.value.split("\\");
     let fileName = filePath.pop();
     let tail = fileName.split(".").pop();
     if (tail === "pdf" || tail === "doc" || tail === "docx") {
       setTail(tail);
-      setFileName(fileName);
+      setFile(file);
     } else {
       toast.error("Please provide file with PDF, DOC or DOCX type only", {
         position: "top-right",
@@ -187,13 +200,13 @@ export default function Storage() {
               onChange={(e) => setDescription(e.target.value)}
             />
             <Box sx={{ display: "flex" }}>
-              <label htmlFor="upload-photo">
+              <label htmlFor="upload-file">
                 <input
                   style={{ display: "none" }}
-                  id="upload-photo"
-                  name="upload-photo"
+                  id="upload-file"
+                  name="upload-file"
                   type="file"
-                  onChange={handleUpload}
+                  onChange={(e) => handleUpload(e)}
                 />
                 <Button variant="contained" component="span">
                   Upload button

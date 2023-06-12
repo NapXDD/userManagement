@@ -30,6 +30,7 @@ export default function UserProfileCard() {
   };
 
   const handleChangeAva = async (e) => {
+    console.log(e.target.files)
     const uploadData = new FormData();
     uploadData.append("image", e.target.files[0], e.target.files[0].name);
 
