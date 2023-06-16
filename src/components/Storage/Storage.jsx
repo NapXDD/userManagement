@@ -17,14 +17,13 @@ import {
   addDocDOCX,
   addDocPDF,
 } from "../../utilities/Docs_API/apiClientPost_Docs";
+import { getAllDocs } from "../../utilities/Docs_API/apiClientGet_Docs";
 
 export default function Storage() {
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [file, setFile] = useState({
-    file: {},
-  });
+  const [selectedFile, setSelectedFile] = useState(null);
   const [docs, setDocs] = useState([]);
   const [tail, setTail] = useState("");
   const [flag, setFlag] = useState(false);
@@ -32,22 +31,6 @@ export default function Storage() {
 
   const reversed = [...docs].reverse();
   const currentUser = useSelector((state) => state.currentUser.data);
-
-  console.log(file);
-
-  const handleCreatePost = () => {
-    // newPost = {
-    //   ...newPost,
-    //   title: title,
-    //   content: content,
-    //   author: currentUser.username,
-    //   uploadDate: formattedDate(),
-    //   authorID: currentUser._id,
-    // };
-    console.log("lmao");
-
-    setOpen(false);
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -58,20 +41,13 @@ export default function Storage() {
   };
 
   const handleUpload = (e) => {
-    const uploadData = new FormData();
-
-    uploadData.append("image", e.target.files[0], e.target.files[0].name);
-
-    const file = {
-      file: uploadData.get("image"),
-    };
-
     let filePath = e.target.value.split("\\");
     let fileName = filePath.pop();
     let tail = fileName.split(".").pop();
     if (tail === "pdf" || tail === "doc" || tail === "docx") {
       setTail(tail);
-      setFile(file);
+      setFileName(fileName);
+      setSelectedFile(e.target.files[0]);
     } else {
       toast.error("Please provide file with PDF, DOC or DOCX type only", {
         position: "top-right",
@@ -99,13 +75,19 @@ export default function Storage() {
         theme: "colored",
       });
     } else {
-      let newData = {
+      const uploadData = new FormData();
+
+      uploadData.append("file", selectedFile, selectedFile.name);
+      // const fileData = uploadData.get("file");
+      const newData = {
         docName: fileName,
         description: description,
         submitDate: getCurrentYMD(),
         uploadBy: currentUser.username,
         uploaderID: currentUser._id,
+        file: uploadData.get("file"),
       };
+
       handleCreateDoc_CallAPI(newData, token);
       setFileName("");
       setDescription("");
@@ -118,13 +100,13 @@ export default function Storage() {
     try {
       switch (tail) {
         case "pdf": {
-          res = await addDocPDF(req, token);
+          res = await addDocPDF(token, req);
         }
         case "doc": {
-          res = await addDocDOC(req, token);
+          res = await addDocDOC(token, req);
         }
         case "docx": {
-          res = await addDocDOCX(req, token);
+          res = await addDocDOCX(token, req);
         }
         default: {
           console.log("lmao");
@@ -141,6 +123,7 @@ export default function Storage() {
           progress: undefined,
           theme: "colored",
         });
+        setFlag(!flag);
       }
     } catch (e) {
       toast.error(e, {
@@ -156,18 +139,18 @@ export default function Storage() {
     }
   };
 
-  // const handleGetAllPosts_CallAPI = async () => {
-  //   try {
-  //     const { data: res } = await getAllPosts(token);
-  //     setPosts(res);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const handleGetAllPosts_CallAPI = async () => {
+    try {
+      const { data: res } = await getAllDocs(token);
+      setDocs(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  // useEffect(() => {
-  //   handleGetAllPosts_CallAPI();
-  // }, [flag]);
+  useEffect(() => {
+    handleGetAllPosts_CallAPI();
+  }, [flag]);
 
   return (
     <>
@@ -221,8 +204,8 @@ export default function Storage() {
           </DialogActions>
         </Dialog>
       </Box>
-      {reversed.map((post) => {
-        return <StorageCard key={post._id} data={post} />;
+      {reversed.map((doc) => {
+        return <StorageCard key={doc._id} data={doc} />;
       })}
     </>
   );

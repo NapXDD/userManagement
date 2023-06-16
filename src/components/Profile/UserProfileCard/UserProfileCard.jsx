@@ -1,6 +1,4 @@
-import {
-  updateUserAvatarByID,
-} from "../../../utilities/apiClientPut";
+import { updateUserAvatarByID } from "../../../utilities/apiClientPut";
 import { avatarURL } from "../../../utilities/avatarURL";
 import { toast } from "react-toastify";
 import "./userProfileCard.css";
@@ -12,9 +10,9 @@ import { currentUserData } from "../../../Redux/features/setCurrentUser";
 export default function UserProfileCard() {
   const token = localStorage.getItem("accessToken");
   const currentUserId = localStorage.getItem("userId");
-  const user = useSelector(state => state.user.data)
-  const dispatch = useDispatch()
-  
+  const user = useSelector((state) => state.user.data);
+  const dispatch = useDispatch();
+
   const handleMouseEnter = () => {
     const changeElement = document.querySelector(".change-paragraph");
     if (changeElement !== null) {
@@ -30,7 +28,7 @@ export default function UserProfileCard() {
   };
 
   const handleChangeAva = async (e) => {
-    console.log(e.target.files)
+    console.log(e.target.files);
     const uploadData = new FormData();
     uploadData.append("image", e.target.files[0], e.target.files[0].name);
 
@@ -38,23 +36,25 @@ export default function UserProfileCard() {
       image: uploadData.get("image"),
     };
 
+    console.log(image);
+
     try {
-      const res = await updateUserAvatarByID(currentUserId, image, token)
-        if (res.status === 200) {
-          const {data: res} = await getUserbyID(currentUserId, token)
-          dispatch(userData(res))
-          dispatch(currentUserData(res))
-          toast.success("Change avatar success", {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        }
+      const res = await updateUserAvatarByID(currentUserId, image, token);
+      if (res.status === 200) {
+        const { data: res } = await getUserbyID(currentUserId, token);
+        dispatch(userData(res));
+        dispatch(currentUserData(res));
+        toast.success("Change avatar success", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
     } catch (err) {
       console.error(err);
     }

@@ -13,7 +13,7 @@ const styles = {
 };
 
 export default function StorageCard(data) {
-  const post = data.data;
+  const doc = data.data;
   const currentUser = useSelector((state) => state.currentUser.data);
 
   return (
@@ -28,11 +28,6 @@ export default function StorageCard(data) {
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
         <CardContent sx={{ flex: "1 0 auto", padding: 2 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Link to={`post/${post._id}`}>
-              <Typography sx={styles.typography}>{post.title}</Typography>
-            </Link>
-          </Box>
           <Typography
             variant="subtitle1"
             color="text.secondary"
@@ -43,19 +38,19 @@ export default function StorageCard(data) {
               overflow: "hidden",
             }}
           >
-            lmao
+            {doc.description}
           </Typography>
           <Typography
             variant="subtitle1"
-            color="text.secondary"
-            component="div"
+            color="blue"
+            component="a"
             sx={{
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               overflow: "hidden",
             }}
           >
-            Created by: lmao
+            <a href={doc.filePath}>{doc.docName}</a>
           </Typography>
         </CardContent>
       </Box>
