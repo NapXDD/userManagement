@@ -6,7 +6,11 @@ import ListSubheader from "@mui/material/ListSubheader";
 import PeopleIcon from "@mui/icons-material/People";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import StorageIcon from "@mui/icons-material/Storage";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -24,7 +28,7 @@ export const mainListItems = (
     <Link to="/dashboard/posts">
       <ListItemButton>
         <ListItemIcon>
-          <PeopleIcon />
+          <NotificationsActiveIcon />
         </ListItemIcon>
         <ListItemText primary="Posts" />
       </ListItemButton>
@@ -33,7 +37,7 @@ export const mainListItems = (
     <Link to="/dashboard/meeting">
       <ListItemButton>
         <ListItemIcon>
-          <PeopleIcon />
+          <MeetingRoomIcon />
         </ListItemIcon>
         <ListItemText primary="Meeting" />
       </ListItemButton>
@@ -42,7 +46,7 @@ export const mainListItems = (
     <Link to="/dashboard/storage">
       <ListItemButton>
         <ListItemIcon>
-          <PeopleIcon />
+          <StorageIcon />
         </ListItemIcon>
         <ListItemText primary="Storage" />
       </ListItemButton>
@@ -64,7 +68,7 @@ export const SecondaryListItems = ({ handleLogOut }) => {
         <Link to={"/dashboard/approveMeeting"}>
           <ListItemButton>
             <ListItemIcon>
-              <LockOpenIcon />
+              <CheckBoxIcon />
             </ListItemIcon>
             <ListItemText primary="Approve Meeting" />
           </ListItemButton>

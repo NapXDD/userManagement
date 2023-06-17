@@ -1,12 +1,13 @@
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { logout } from "../../Redux/features/setAuth";
 import { updateUserPasswordByID } from "../../utilities/apiClientPut";
 import { toast } from "react-toastify";
 import "./changepassword.css";
 import { useEffect } from "react";
+import { currentUser } from "./../../Redux/features/setCurrentUser";
 
 export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -20,6 +21,7 @@ export default function ChangePassword() {
   const [newPasswordHelper, setNewRasswordHelper] = useState("");
   const [isRender, setIsRender] = useState(false);
   const token = localStorage.getItem("accessToken");
+  const currentUser = useSelector((state) => state.currentUser.data);
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -150,59 +152,65 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="change-password-container">
-      <div className="change-password-content">
-        <div className="title-describe">
-          <p>Change your password here:</p>
+    <div>
+      {currentUser._id !== id ? (
+        <p>You are not allow to do that!!!</p>
+      ) : (
+        <div className="change-password-container">
+          <div className="change-password-content">
+            <div className="title-describe">
+              <p>Change your password here:</p>
+            </div>
+            <form className="profile-setting-form" onSubmit={handleSubmit}>
+              <TextField
+                error={errorPasswordState}
+                label="current password"
+                id="password"
+                name="password"
+                type="password"
+                helperText={passwordHelper}
+                fullWidth
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                onFocus={handlePassFocus}
+              />
+              <TextField
+                error={errorNewPasswordState}
+                label="new password"
+                id="newpassword"
+                name="newpassword"
+                type="password"
+                fullWidth
+                helperText={newPasswordHelper}
+                margin="normal"
+                onChange={(e) => setNewPassword(e.target.value)}
+                onFocus={handleNewPassFocus}
+              />
+              <TextField
+                error={errorRePasswordState}
+                label="retype new password"
+                id="repassword"
+                name="repassword"
+                type="password"
+                fullWidth
+                helperText={reRasswordHelper}
+                margin="normal"
+                onChange={(e) => setRepassword(e.target.value)}
+                onFocus={handleRePassFocus}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{
+                  marginBottom: 1,
+                }}
+              >
+                Submit
+              </Button>
+            </form>
+          </div>
         </div>
-        <form className="profile-setting-form" onSubmit={handleSubmit}>
-          <TextField
-            error={errorPasswordState}
-            label="current password"
-            id="password"
-            name="password"
-            type="password"
-            helperText={passwordHelper}
-            fullWidth
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            onFocus={handlePassFocus}
-          />
-          <TextField
-            error={errorNewPasswordState}
-            label="new password"
-            id="newpassword"
-            name="newpassword"
-            type="password"
-            fullWidth
-            helperText={newPasswordHelper}
-            margin="normal"
-            onChange={(e) => setNewPassword(e.target.value)}
-            onFocus={handleNewPassFocus}
-          />
-          <TextField
-            error={errorRePasswordState}
-            label="retype new password"
-            id="repassword"
-            name="repassword"
-            type="password"
-            fullWidth
-            helperText={reRasswordHelper}
-            margin="normal"
-            onChange={(e) => setRepassword(e.target.value)}
-            onFocus={handleRePassFocus}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{
-              marginBottom: 1,
-            }}
-          >
-            Submit
-          </Button>
-        </form>
-      </div>
+      )}
     </div>
   );
 }

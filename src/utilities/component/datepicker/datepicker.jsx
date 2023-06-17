@@ -26,7 +26,7 @@ export default function BasicDatePicker({
           margin="normal"
           disableFuture={false || disableFuture}
           disablePast={false || disablePast}
-          defaultValue={dayjs(`${defaultValue}`)}
+          value={dayjs(`${defaultValue}`)}
           sx={{
             width: "100%",
             display: "flex",

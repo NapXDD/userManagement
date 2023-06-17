@@ -8,42 +8,51 @@ import { useDispatch, useSelector } from "react-redux";
 import { userData } from "../../../Redux/features/setUser";
 import { getUserbyID } from "../../../utilities/apiClientGet";
 
-export default function UserProfileSetting({ user }) {
+export default function UserProfileSetting() {
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("accessToken");
   const currentUser = useSelector((state) => state.currentUser.data);
+  const user = useSelector((state) => state.user.data);
+  const [errorBioState, setErrorBioState] = useState(false);
+  const [bioHelper, setBioHelper] = useState("");
+  const [didRender, setDidRender] = useState(false);
   const [newData, setNewData] = useState({
-    username: user.username,
-    bio: user.bio,
-    birthDay: user.birthDay,
+    username: "",
+    bio: "",
+    birthDay: "",
   });
+  let regex = /^\d+$/;
+
+  console.log(newData.bio);
 
   const [date, setDate] = useState(user.birthDay);
-  const birthDay = user.birthDay.split("-");
+  const birthDay = newData.birthDay.split("-");
 
   const handleUpdateUser = async () => {
-    try {
-      if (newData.birthDay === "NaN-NaN-NaN") {
-        newData.birthDay = "";
+    if (errorBioState === false) {
+      try {
+        if (newData.birthDay === "NaN-NaN-NaN") {
+          newData.birthDay = "";
+        }
+        const res = await updateUserbyID(userId, newData, token);
+        if (res.status === 200) {
+          const { data: res } = await getUserbyID(userId, token);
+          dispatch(userData(res));
+          toast.success("User profile updated", {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      } catch (err) {
+        console.log(err);
       }
-      const res = await updateUserbyID(userId, newData, token);
-      if (res.status === 200) {
-        const { data: res } = await getUserbyID(userId, token);
-        dispatch(userData(res));
-        toast.success("User profile updated", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-      }
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -62,6 +71,19 @@ export default function UserProfileSetting({ user }) {
     );
   };
 
+  const handleCheckBio = () => {
+    if (newData.bio === "") {
+      setErrorBioState(false);
+      setBioHelper("");
+    } else if (!regex.test(newData.bio)) {
+      setErrorBioState(true);
+      setBioHelper("CCCD/CMND must be number");
+    } else {
+      setErrorBioState(false);
+      setBioHelper("");
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     handleUpdateUser();
@@ -74,6 +96,25 @@ export default function UserProfileSetting({ user }) {
     });
   }, [date]);
 
+  useEffect(() => {
+    setNewData({
+      ...newData,
+      username: user.username,
+      bio: user.bio,
+      birthDay: user.birthDay,
+    });
+  }, [user]);
+
+  useEffect(() => {
+    if (didRender) {
+      handleCheckBio();
+    }
+  }, [newData.bio]);
+
+  useEffect(() => {
+    setDidRender(true);
+  }, []);
+
   return (
     <div className="profile-setting-container">
       <div className="title-describe">
@@ -85,18 +126,20 @@ export default function UserProfileSetting({ user }) {
           id="username"
           name="username"
           required
-          defaultValue={user.username}
+          value={newData.username}
           onChange={handleChange}
           fullWidth
         />
         <TextField
-          label="Bio"
+          label="CMND/CCCD"
           id="bio"
           name="bio"
-          defaultValue={user.bio}
+          value={newData.bio}
           onChange={handleChange}
           fullWidth
           margin="normal"
+          error={errorBioState}
+          helperText={bioHelper}
           disabled={currentUser.isAdmin === true ? false : true}
         />
         <BasicDatePicker

@@ -1,7 +1,20 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useState } from "react";
 
 const styles = {
   typography: {
@@ -15,11 +28,26 @@ const styles = {
 
 export default function PostCard(data) {
   const post = data.data;
+  const handleDelete = data.handleDeletePost;
   const currentUser = useSelector((state) => state.currentUser.data);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleNavigate = () => {
     navigate(`edit/${post._id}`);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleDeletePost = () => {
+    handleDelete(post._id);
+    handleClose();
   };
 
   return (
@@ -39,9 +67,14 @@ export default function PostCard(data) {
               <Typography sx={styles.typography}>{post.title}</Typography>
             </Link>
             {post.authorID === currentUser._id ? (
-              <Button onClick={handleNavigate}>
-                <EditIcon />
-              </Button>
+              <Box>
+                <Button onClick={handleNavigate}>
+                  <EditIcon />
+                </Button>
+                <Button onClick={handleClickOpen}>
+                  <DeleteIcon />
+                </Button>
+              </Box>
             ) : (
               <></>
             )}
@@ -72,6 +105,25 @@ export default function PostCard(data) {
           </Typography>
         </CardContent>
       </Box>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Post"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this post ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleDeletePost} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 }

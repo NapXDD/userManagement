@@ -18,6 +18,7 @@ import {
   addDocPDF,
 } from "../../utilities/Docs_API/apiClientPost_Docs";
 import { getAllDocs } from "../../utilities/Docs_API/apiClientGet_Docs";
+import { deleteDoc } from "../../utilities/Docs_API/apiClientDelete_Docs";
 
 export default function Storage() {
   const [description, setDescription] = useState("");
@@ -108,9 +109,6 @@ export default function Storage() {
         case "docx": {
           res = await addDocDOCX(token, req);
         }
-        default: {
-          console.log("lmao");
-        }
       }
       if (res.status === 200) {
         toast.success("Doc created", {
@@ -148,9 +146,43 @@ export default function Storage() {
     }
   };
 
+  const handleDelete = async (data) => {
+    handleDeleteDoc_CallAPI(token, data);
+  };
+
   useEffect(() => {
     handleGetAllPosts_CallAPI();
   }, [flag]);
+
+  const handleDeleteDoc_CallAPI = async (token, docID) => {
+    try {
+      const res = await deleteDoc(token, docID);
+      if (res.status === 200) {
+        setFlag(!flag);
+        toast.success("Doc deleted", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (e) {
+      toast.error(e, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
 
   return (
     <>
@@ -205,7 +237,9 @@ export default function Storage() {
         </Dialog>
       </Box>
       {reversed.map((doc) => {
-        return <StorageCard key={doc._id} data={doc} />;
+        return (
+          <StorageCard key={doc._id} data={doc} handleDelete={handleDelete} />
+        );
       })}
     </>
   );

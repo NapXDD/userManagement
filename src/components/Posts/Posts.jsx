@@ -13,6 +13,7 @@ import { addPost } from "../../utilities/Posts_API/apiClientPost_Posts";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { getAllPosts } from "../../utilities/Posts_API/apiClientGet_Posts";
+import { deletePost } from "../../utilities/Posts_API/apiClientDelete_Posts";
 
 export default function Posts() {
   const [title, setTitle] = useState("");
@@ -103,10 +104,35 @@ export default function Posts() {
     }
   };
 
+  const handleDeletePost = (data) => {
+    handleDeletePost_CallAPI(token, data);
+  };
+
   const handleGetAllPosts_CallAPI = async () => {
     try {
       const { data: res } = await getAllPosts(token);
       setPosts(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDeletePost_CallAPI = async (token, postID) => {
+    try {
+      const res = await deletePost(token, postID);
+      if (res.status === 200) {
+        toast.success("Post deleted", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setFlag(!flag);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -163,7 +189,13 @@ export default function Posts() {
         </Dialog>
       </Box>
       {reversed.map((post) => {
-        return <PostCard key={post._id} data={post} />;
+        return (
+          <PostCard
+            key={post._id}
+            data={post}
+            handleDeletePost={handleDeletePost}
+          />
+        );
       })}
     </>
   );

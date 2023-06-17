@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { getUserbyID } from "../../utilities/apiClientGet";
 import { currentUserData } from "../../Redux/features/setCurrentUser";
-import "./login.css"
+import "./login.css";
 
 function Copyright(props) {
   return (
@@ -43,7 +43,7 @@ const theme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [didRender, setDidRender] = useState(false)
+  const [didRender, setDidRender] = useState(false);
   let [errorEmailState, setErrorEmailState] = useState(false);
   let [errorPasswordState, setErrorPasswordState] = useState(false);
   const [emailHepler, setEmailHelper] = useState("");
@@ -57,8 +57,8 @@ export default function SignIn() {
     const data = new FormData(event.currentTarget);
     const date = new Date();
 
-    if(email === "" || password === ""){
-      toast.error('Please fill all the empty required field', {
+    if (email === "" || password === "") {
+      toast.error("Please fill all the empty required field", {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,
@@ -67,20 +67,23 @@ export default function SignIn() {
         draggable: true,
         progress: undefined,
         theme: "colored",
-        });
-      return
+      });
+      return;
     }
 
-    if (errorEmailState === false && errorPasswordState === false){
-      try{
-        const res = await loginAccount(data.get("email"), data.get("password"))
+    if (errorEmailState === false && errorPasswordState === false) {
+      try {
+        const res = await loginAccount(data.get("email"), data.get("password"));
         if (res.status === 200) {
           localStorage.setItem("accessToken", res.data.accessToken); //save token to local storage
           localStorage.setItem("userId", res.data._id); //save userid to local storage
           localStorage.setItem("loggedTime", date);
-          const {data: response} = await getUserbyID(res.data._id, res.data.accessToken)
+          const { data: response } = await getUserbyID(
+            res.data._id,
+            res.data.accessToken
+          );
           navigate("/");
-          dispatch(currentUserData(response))
+          dispatch(currentUserData(response));
           dispatch(loginSuccess());
           toast.success("Login success!", {
             position: "top-right",
@@ -93,7 +96,7 @@ export default function SignIn() {
             theme: "colored",
           });
         }
-      }catch{
+      } catch {
         toast.error("Email or password incorrect", {
           position: "top-right",
           autoClose: 1000,
@@ -106,7 +109,7 @@ export default function SignIn() {
         });
       }
     }
-    }
+  };
 
   const handleCheckEmail = () => {
     if (email.length === 0) {
@@ -134,20 +137,20 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    setDidRender(true)
-  }, [])
+    setDidRender(true);
+  }, []);
 
   useEffect(() => {
-    if(didRender){
-      handleCheckEmail()
+    if (didRender) {
+      handleCheckEmail();
     }
-  }, [email])
+  }, [email]);
 
   useEffect(() => {
-    if(didRender){
-      handleCheckPassword()
+    if (didRender) {
+      handleCheckPassword();
     }
-  }, [password])
+  }, [password]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -167,11 +170,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ mt: 1 }}
-          >
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               error={errorEmailState}
               margin="normal"
@@ -182,7 +181,7 @@ export default function SignIn() {
               type="email"
               autoComplete="email"
               helperText={emailHepler}
-              onChange={(e) => setEmail(e.target.value)}  
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               error={errorPasswordState}
@@ -214,7 +213,9 @@ export default function SignIn() {
           </Box>
         </Box>
       </Container>
-      <Copyright sx={{ mt: 8, mb: 4, position: "absolute", bottom: 0, width: "100%",  }} />
+      <Copyright
+        sx={{ mt: 8, mb: 4, position: "absolute", bottom: 0, width: "100%" }}
+      />
     </ThemeProvider>
   );
 }

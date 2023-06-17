@@ -6,12 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserbyID } from "../../../utilities/apiClientGet";
 import { userData } from "../../../Redux/features/setUser";
 import { currentUserData } from "../../../Redux/features/setCurrentUser";
+import { getCurrentDM } from "./../../../utilities/DateTime/getDate";
 
 export default function UserProfileCard() {
   const token = localStorage.getItem("accessToken");
   const currentUserId = localStorage.getItem("userId");
   const user = useSelector((state) => state.user.data);
   const dispatch = useDispatch();
+
+  const userBDDM = user.birthDay.split("-").slice(0, 2).join("-");
 
   const handleMouseEnter = () => {
     const changeElement = document.querySelector(".change-paragraph");
@@ -92,10 +95,17 @@ export default function UserProfileCard() {
             <p>Email: {user.email}</p>
           </div>
           <div className="user-profile-bio">
-            <p>Bio: {user.bio}</p>
+            <p>CMND/CCCD: {user.bio}</p>
           </div>
           <div className="user-profile-date">
-            <p>Date of birth: {user.birthDay}</p>
+            {getCurrentDM() === userBDDM ? (
+              <p>
+                Date of birth: {user.birthDay}{" "}
+                <span style={{ color: "blue" }}>Happy birtday!!!</span>
+              </p>
+            ) : (
+              <p>Date of birth: {user.birthDay}</p>
+            )}
           </div>
         </div>
       </div>
