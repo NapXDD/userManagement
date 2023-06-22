@@ -1,0 +1,6 @@
+[submodule "src/utilities/submoduleTest"]
+	path = src/utilities/submoduleTest
+	url = https://github.com/NapXDD/submoduleTest.git
+[submodule "src/utilities/component/submoduleTest"]
+	path = src/utilities/component/submoduleTest
+	url = https://github.com/NapXDD/submoduleTest.git
