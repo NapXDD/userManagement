@@ -126,7 +126,7 @@ function App() {
           <Route path="posts/post/:id" element={<Post />} />
           <Route path="meeting" element={<Meeting />} />
           <Route path="storage" element={<Storage />} />
-          {currentUser.isAdmin === true ? (
+          {currentUser.isAdmin === false ? (
             <>
               <Route path="posts/edit/:id" element={<EditPost />} />
               <Route path="approveMeeting" element={<ApproveMeeting />} />
